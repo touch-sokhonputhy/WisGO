@@ -14,6 +14,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInAsGuest: (guestName?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
 }
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   userProfile: null,
   loading: true,
   signInWithGoogle: async () => {},
+  signInAsGuest: async () => {},
   logout: async () => {},
   updateUserPreferences: async () => {}
 });
@@ -107,19 +109,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google:', error);
+      if (error?.code === 'auth/unauthorized-domain' || error?.message?.includes('unauthorized-domain')) {
+        throw new Error('This domain (wis-go.vercel.app) is not authorized in Firebase. Please add "wis-go.vercel.app" to Firebase Console -> Authentication -> Settings -> Authorized domains.');
+      }
+      if (error?.code === 'auth/api-key-not-valid' || error?.message?.includes('api-key-not-valid')) {
+        throw new Error('Firebase API key issue detected. You can use "Continue as Guest Explorer" to test all WisGO features!');
+      }
+      if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
+        throw new Error('Google Sign-In popup was closed or blocked by browser settings. Try "Continue as Guest Explorer".');
+      }
       throw error;
     }
+  };
+
+  const signInAsGuest = async (guestName = 'Khmer Explorer') => {
+    const fakeUid = 'guest-' + Date.now();
+    const guestUser = {
+      uid: fakeUid,
+      displayName: guestName,
+      email: 'guest@wisgo.kh',
+      photoURL: '',
+    };
+    setCurrentUser(guestUser as any);
+    setUserProfile({
+      uid: fakeUid,
+      name: guestName,
+      email: guestUser.email,
+      avatar: '',
+      createdAt: new Date().toISOString(),
+      preferences: defaultPreferences
+    });
   };
 
   const logout = async () => {
     try {
       await signOut(auth);
-      setUserProfile(null);
     } catch (error) {
       console.error('Error logging out:', error);
     }
+    setCurrentUser(null);
+    setUserProfile(null);
   };
 
   const updateUserPreferences = async (newPrefs: Partial<NonNullable<UserProfile['preferences']>>) => {
@@ -155,6 +186,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userProfile,
         loading,
         signInWithGoogle,
+        signInAsGuest,
         logout,
         updateUserPreferences
       }}
