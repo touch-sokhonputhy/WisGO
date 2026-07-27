@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { 
   User, 
   signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth';
@@ -14,7 +16,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInAsGuest: (guestName?: string) => Promise<void>;
+  signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
 }
@@ -104,6 +106,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
+    // Handle Google redirect auth result if redirected back
+    getRedirectResult(auth).then(async (result) => {
+      if (result?.user) {
+        localStorage.removeItem('wisgo_guest_user');
+        setCurrentUser(result.user);
+        await syncUserProfile(result.user);
+      }
+    }).catch((err) => {
+      console.warn('Redirect result check error:', err);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         localStorage.removeItem('wisgo_guest_user');
@@ -125,36 +138,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
-      console.error('Error signing in with Google:', error);
-      if (error?.code === 'auth/unauthorized-domain' || error?.message?.includes('unauthorized-domain')) {
-        throw new Error('Firebase Authorized Domain restriction: Domain "wis-go.vercel.app" is not authorized on AI Studio Starter Tier. Please click "Continue as Guest Local Explorer" below to access all WisGO features!');
+      console.error('Error signing in with Google popup:', error);
+      const errCode = String(error?.code || '').toLowerCase();
+      const errStr = (String(error?.code || '') + ' ' + String(error?.message || '')).toLowerCase();
+
+      // If popup was blocked or closed, try redirect method as fallback
+      if (errCode.includes('popup-blocked') || errCode.includes('popup-closed')) {
+        try {
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        } catch (redirectErr: any) {
+          console.error('Error with redirect sign-in:', redirectErr);
+          throw new Error('Google Sign-In popup was blocked by browser. Please click "Continue as Guest Local Explorer" below or use "Custom Name & Email" to sign in instantly!');
+        }
       }
-      if (error?.code === 'auth/api-key-not-valid' || error?.message?.includes('api-key-not-valid')) {
-        throw new Error('Firebase Auth domain restriction detected. Please click "Continue as Guest Local Explorer" below to enjoy all features!');
+      
+      if (errStr.includes('unauthorized-domain')) {
+        throw new Error('Firebase Authorized Domain restriction: "wis-go.vercel.app" is not authorized in Firebase Console. Please click "Continue as Guest Local Explorer" below!');
       }
-      if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
-        throw new Error('Google Sign-In popup was closed or blocked by browser settings. Try "Continue as Guest Explorer".');
+      if (errStr.includes('api-key') || errStr.includes('apikey')) {
+        throw new Error('Firebase API key domain restriction detected. Please click "Continue as Guest Local Explorer" or "Custom Name & Email" below!');
       }
-      throw error;
+      
+      throw new Error(error?.message || 'Google Sign-In popup blocked or unavailable in this window. Please click "Continue as Guest Local Explorer" below!');
     }
   };
 
-  const signInAsGuest = async (guestName = 'Khmer Explorer') => {
-    const fakeUid = 'guest-' + Date.now();
+  const signInAsGuest = async (guestName = 'Khmer Explorer', guestEmail = 'explorer@wisgo.kh') => {
+    const fakeUid = 'explorer-' + Date.now().toString(36);
     const guestUser = {
       uid: fakeUid,
       displayName: guestName,
-      email: 'explorer@wisgo.kh',
+      email: guestEmail,
       photoURL: '',
     };
     const profile: UserProfile = {
       uid: fakeUid,
       name: guestName,
-      email: guestUser.email,
+      email: guestEmail,
       avatar: '',
       createdAt: new Date().toISOString(),
       preferences: defaultPreferences
     };
+
+    // Try saving to Firestore if connected
+    try {
+      const userDocRef = doc(db, 'users', fakeUid);
+      await setDoc(userDocRef, profile);
+    } catch (err) {
+      console.warn('Could not sync local explorer profile to Firestore, using local storage:', err);
+    }
+
     localStorage.setItem('wisgo_guest_user', JSON.stringify({ user: guestUser, profile }));
     setCurrentUser(guestUser as any);
     setUserProfile(profile);
