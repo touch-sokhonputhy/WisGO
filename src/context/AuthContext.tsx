@@ -106,15 +106,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    // Handle Google redirect auth result if redirected back
+    // Safely check redirect result if available
     getRedirectResult(auth).then(async (result) => {
       if (result?.user) {
         localStorage.removeItem('wisgo_guest_user');
         setCurrentUser(result.user);
         await syncUserProfile(result.user);
       }
-    }).catch((err) => {
-      console.warn('Redirect result check error:', err);
+    }).catch(() => {
+      // Ignored: expected when OAuth domain restriction is active in preview container
     });
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -138,29 +138,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
-      console.error('Error signing in with Google popup:', error);
-      const errCode = String(error?.code || '').toLowerCase();
       const errStr = (String(error?.code || '') + ' ' + String(error?.message || '')).toLowerCase();
 
-      // If popup was blocked or closed, try redirect method as fallback
-      if (errCode.includes('popup-blocked') || errCode.includes('popup-closed')) {
-        try {
-          await signInWithRedirect(auth, googleProvider);
-          return;
-        } catch (redirectErr: any) {
-          console.error('Error with redirect sign-in:', redirectErr);
-          throw new Error('Google Sign-In popup was blocked by browser. Please click "Continue as Guest Local Explorer" below or use "Custom Name & Email" to sign in instantly!');
-        }
+      if (errStr.includes('popup-blocked') || errStr.includes('popup-closed')) {
+        throw new Error('Google Sign-In popup was blocked by browser settings or preview sandbox. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
       }
       
       if (errStr.includes('unauthorized-domain')) {
-        throw new Error('Firebase Authorized Domain restriction: "wis-go.vercel.app" is not authorized in Firebase Console. Please click "Continue as Guest Local Explorer" below!');
+        throw new Error('Firebase Authorized Domain restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
       }
+
       if (errStr.includes('api-key') || errStr.includes('apikey')) {
-        throw new Error('Firebase API key domain restriction detected. Please click "Continue as Guest Local Explorer" or "Custom Name & Email" below!');
+        throw new Error('Firebase API Key domain policy restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
       }
       
-      throw new Error(error?.message || 'Google Sign-In popup blocked or unavailable in this window. Please click "Continue as Guest Local Explorer" below!');
+      throw new Error('Google Sign-In is unavailable in this popup preview. Please use "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
     }
   };
 
