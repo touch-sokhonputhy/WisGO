@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile with Google auth details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "avatar": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Destination": {
+      "title": "Cambodia Destination",
+      "description": "Attractions, temples, local street food, markets, hotels in Cambodia",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "province": { "type": "string" },
+        "category": { "type": "string" },
+        "rating": { "type": "number" },
+        "location": { "type": "object" },
+        "image": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "title", "province", "category"]
+    },
+    "Itinerary": {
+      "title": "Trip Itinerary",
+      "description": "User created or AI generated Cambodia trip plan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "durationDays": { "type": "number" },
+        "province": { "type": "string" },
+        "items": { "type": "array" }
+      },
+      "required": ["id", "userId", "title"]
+    },
+    "Favorite": {
+      "title": "User Favorite Spot",
+      "description": "Saved destination for a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "destinationId": { "type": "string" }
+      },
+      "required": ["id", "userId", "destinationId"]
+    },
+    "Review": {
+      "title": "Destination Review",
+      "description": "User reviews for a destination",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "destinationId": { "type": "string" },
+        "userId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "destinationId", "userId", "rating", "comment"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile collection"
+    },
+    "/destinations/{destinationId}": {
+      "schema": { "$ref": "#/entities/Destination" },
+      "description": "Cambodia destinations collection"
+    },
+    "/itineraries/{itineraryId}": {
+      "schema": { "$ref": "#/entities/Itinerary" },
+      "description": "User travel itineraries"
+    },
+    "/favorites/{favoriteId}": {
+      "schema": { "$ref": "#/entities/Favorite" },
+      "description": "User favorite destinations"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "User reviews for destinations"
+    }
+  }
+}

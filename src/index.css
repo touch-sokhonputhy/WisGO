@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-primary: #0B7A5C;
+  --color-primary-dark: #086048;
+  --color-primary-light: #109B76;
+  --color-mint: #DFF7ED;
+  --color-mint-light: #F0FAF5;
+  --color-accent: #21C87A;
+  --color-bg-light: #F8FCFA;
+  --color-text-dark: #1E293B;
+  --color-text-gray: #64748B;
+  --color-border-light: #E5E7EB;
+}
+
+body {
+  background-color: var(--color-bg-light, #F8FCFA);
+  color: var(--color-text-dark, #1E293B);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}

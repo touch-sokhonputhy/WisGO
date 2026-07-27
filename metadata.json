@@ -1,0 +1,6 @@
+{
+  "name": "WisGO",
+  "description": "AI-powered travel assistant and tourism discovery app for foreign tourists.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
