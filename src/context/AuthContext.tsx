@@ -93,12 +93,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    const savedGuest = localStorage.getItem('wisgo_guest_user');
+    if (savedGuest) {
+      try {
+        const parsed = JSON.parse(savedGuest);
+        setCurrentUser(parsed.user);
+        setUserProfile(parsed.profile);
+      } catch (e) {
+        localStorage.removeItem('wisgo_guest_user');
+      }
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
       if (user) {
+        localStorage.removeItem('wisgo_guest_user');
+        setCurrentUser(user);
         await syncUserProfile(user);
       } else {
-        setUserProfile(null);
+        if (!localStorage.getItem('wisgo_guest_user')) {
+          setCurrentUser(null);
+          setUserProfile(null);
+        }
       }
       setLoading(false);
     });
@@ -112,10 +127,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error: any) {
       console.error('Error signing in with Google:', error);
       if (error?.code === 'auth/unauthorized-domain' || error?.message?.includes('unauthorized-domain')) {
-        throw new Error('This domain (wis-go.vercel.app) is not authorized in Firebase. Please add "wis-go.vercel.app" to Firebase Console -> Authentication -> Settings -> Authorized domains.');
+        throw new Error('Firebase Authorized Domain restriction: Domain "wis-go.vercel.app" is not authorized on AI Studio Starter Tier. Please click "Continue as Guest Local Explorer" below to access all WisGO features!');
       }
       if (error?.code === 'auth/api-key-not-valid' || error?.message?.includes('api-key-not-valid')) {
-        throw new Error('Firebase API key issue detected. You can use "Continue as Guest Explorer" to test all WisGO features!');
+        throw new Error('Firebase Auth domain restriction detected. Please click "Continue as Guest Local Explorer" below to enjoy all features!');
       }
       if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
         throw new Error('Google Sign-In popup was closed or blocked by browser settings. Try "Continue as Guest Explorer".');
@@ -129,21 +144,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const guestUser = {
       uid: fakeUid,
       displayName: guestName,
-      email: 'guest@wisgo.kh',
+      email: 'explorer@wisgo.kh',
       photoURL: '',
     };
-    setCurrentUser(guestUser as any);
-    setUserProfile({
+    const profile: UserProfile = {
       uid: fakeUid,
       name: guestName,
       email: guestUser.email,
       avatar: '',
       createdAt: new Date().toISOString(),
       preferences: defaultPreferences
-    });
+    };
+    localStorage.setItem('wisgo_guest_user', JSON.stringify({ user: guestUser, profile }));
+    setCurrentUser(guestUser as any);
+    setUserProfile(profile);
   };
 
   const logout = async () => {
+    localStorage.removeItem('wisgo_guest_user');
     try {
       await signOut(auth);
     } catch (error) {

@@ -90,14 +90,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        <div className="space-y-2.5">
+        <div className="space-y-3">
+          {/* Guest Sign In Button (Highlighted for Vercel / Custom domains) */}
+          <button
+            onClick={handleGuestSignIn}
+            disabled={loading}
+            className="w-full py-3.5 px-4 rounded-2xl bg-[#0B7A5C] hover:bg-[#08634a] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+          >
+            <User className="w-4 h-4 text-[#21C87A]" />
+            <span>Continue as Guest Local Explorer</span>
+          </button>
+
+          <div className="relative flex items-center my-2">
+            <div className="flex-grow border-t border-slate-200"></div>
+            <span className="flex-shrink mx-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">or Google Account</span>
+            <div className="flex-grow border-t border-slate-200"></div>
+          </div>
+
           {/* Google Sign In Button */}
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3.5 px-4 rounded-2xl bg-[#1E293B] hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-3 disabled:opacity-50 cursor-pointer"
+            className="w-full py-3 px-4 rounded-2xl bg-[#1E293B] hover:bg-slate-800 text-white font-medium text-xs shadow-sm transition-all flex items-center justify-center gap-3 disabled:opacity-50 cursor-pointer"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -116,16 +132,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               />
             </svg>
             <span>{loading ? 'Connecting...' : 'Sign in with Google'}</span>
-          </button>
-
-          {/* Guest Sign In Fallback Button */}
-          <button
-            onClick={handleGuestSignIn}
-            disabled={loading}
-            className="w-full py-3 px-4 rounded-2xl bg-[#F8FCFA] hover:bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-          >
-            <User className="w-4 h-4 text-[#0B7A5C]" />
-            <span>Continue as Guest Local Explorer</span>
           </button>
         </div>
 
