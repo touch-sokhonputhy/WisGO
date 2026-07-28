@@ -43,8 +43,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-[#F8FCFA] p-1 rounded-xl border border-slate-200">
+        {/* Desktop & Tablet Navigation Tabs */}
+        <nav className="hidden sm:flex items-center gap-1 bg-[#F8FCFA] p-1 rounded-xl border border-slate-200">
           <button
             onClick={() => setActiveTab('explore')}
             className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5 ${
@@ -83,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setActiveTab('favorites')}
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'favorites'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
