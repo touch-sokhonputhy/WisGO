@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
-import { MobileBottomNav } from './components/MobileBottomNav';
 import { PreferencesModal } from './components/PreferencesModal';
 import { AuthModal } from './components/AuthModal';
 import { MapAndPlanner } from './components/MapAndPlanner';
@@ -103,7 +102,7 @@ function MainApp() {
       </section>
 
       {/* Main Tab Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 sm:pb-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <AnimatePresence mode="wait">
           {/* EXPLORE TAB */}
           {activeTab === 'explore' && (
@@ -356,13 +355,6 @@ function MainApp() {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-      />
-
-      {/* Mobile Bottom Dock Navigation */}
-      <MobileBottomNav
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        savedCount={savedSpotIds.length}
       />
 
     </div>

@@ -2,8 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { 
   User, 
   signInWithPopup, 
-  signInWithRedirect,
-  getRedirectResult,
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth';
@@ -16,7 +14,6 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
-  signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
 }
@@ -33,7 +30,6 @@ const AuthContext = createContext<AuthContextType>({
   userProfile: null,
   loading: true,
   signInWithGoogle: async () => {},
-  signInAsGuest: async () => {},
   logout: async () => {},
   updateUserPreferences: async () => {}
 });
@@ -95,38 +91,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    const savedGuest = localStorage.getItem('wisgo_guest_user');
-    if (savedGuest) {
-      try {
-        const parsed = JSON.parse(savedGuest);
-        setCurrentUser(parsed.user);
-        setUserProfile(parsed.profile);
-      } catch (e) {
-        localStorage.removeItem('wisgo_guest_user');
-      }
-    }
-
-    // Safely check redirect result if available
-    getRedirectResult(auth).then(async (result) => {
-      if (result?.user) {
-        localStorage.removeItem('wisgo_guest_user');
-        setCurrentUser(result.user);
-        await syncUserProfile(result.user);
-      }
-    }).catch(() => {
-      // Ignored: expected when OAuth domain restriction is active in preview container
-    });
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
       if (user) {
-        localStorage.removeItem('wisgo_guest_user');
-        setCurrentUser(user);
         await syncUserProfile(user);
       } else {
-        if (!localStorage.getItem('wisgo_guest_user')) {
-          setCurrentUser(null);
-          setUserProfile(null);
-        }
+        setUserProfile(null);
       }
       setLoading(false);
     });
@@ -137,64 +107,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error: any) {
-      const errStr = (String(error?.code || '') + ' ' + String(error?.message || '')).toLowerCase();
-
-      if (errStr.includes('popup-blocked') || errStr.includes('popup-closed')) {
-        throw new Error('Google Sign-In popup was blocked by browser settings or preview sandbox. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-      
-      if (errStr.includes('unauthorized-domain')) {
-        throw new Error('Firebase Authorized Domain restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-
-      if (errStr.includes('api-key') || errStr.includes('apikey')) {
-        throw new Error('Firebase API Key domain policy restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-      
-      throw new Error('Google Sign-In is unavailable in this popup preview. Please use "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+      throw error;
     }
-  };
-
-  const signInAsGuest = async (guestName = 'Khmer Explorer', guestEmail = 'explorer@wisgo.kh') => {
-    const fakeUid = 'explorer-' + Date.now().toString(36);
-    const guestUser = {
-      uid: fakeUid,
-      displayName: guestName,
-      email: guestEmail,
-      photoURL: '',
-    };
-    const profile: UserProfile = {
-      uid: fakeUid,
-      name: guestName,
-      email: guestEmail,
-      avatar: '',
-      createdAt: new Date().toISOString(),
-      preferences: defaultPreferences
-    };
-
-    // Try saving to Firestore if connected
-    try {
-      const userDocRef = doc(db, 'users', fakeUid);
-      await setDoc(userDocRef, profile);
-    } catch (err) {
-      console.warn('Could not sync local explorer profile to Firestore, using local storage:', err);
-    }
-
-    localStorage.setItem('wisgo_guest_user', JSON.stringify({ user: guestUser, profile }));
-    setCurrentUser(guestUser as any);
-    setUserProfile(profile);
   };
 
   const logout = async () => {
-    localStorage.removeItem('wisgo_guest_user');
     try {
       await signOut(auth);
+      setUserProfile(null);
     } catch (error) {
       console.error('Error logging out:', error);
     }
-    setCurrentUser(null);
-    setUserProfile(null);
   };
 
   const updateUserPreferences = async (newPrefs: Partial<NonNullable<UserProfile['preferences']>>) => {
@@ -230,7 +155,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userProfile,
         loading,
         signInWithGoogle,
-        signInAsGuest,
         logout,
         updateUserPreferences
       }}
