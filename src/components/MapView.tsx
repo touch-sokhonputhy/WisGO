@@ -19,7 +19,7 @@ const API_KEY =
   (globalThis as any).GOOGLE_MAPS_PLATFORM_KEY ||
   '';
 
-const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
+const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY' && API_KEY.trim().length > 10;
 
 // Center of Cambodia
 const CAMBODIA_CENTER = { lat: 12.5657, lng: 104.9910 };
@@ -51,6 +51,23 @@ export const MapView: React.FC<MapViewProps> = ({
 }) => {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('All');
+  const [authFailed, setAuthFailed] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Intercept Google Maps API key authentication failure (e.g. InvalidKeyMapError)
+    const prevGmAuthFailure = (window as any).gm_authFailure;
+    (window as any).gm_authFailure = () => {
+      console.warn('Google Maps API authentication failed (InvalidKeyMapError). Switching to OpenStreetMap fallback.');
+      setAuthFailed(true);
+      if (typeof prevGmAuthFailure === 'function') {
+        prevGmAuthFailure();
+      }
+    };
+
+    return () => {
+      (window as any).gm_authFailure = prevGmAuthFailure;
+    };
+  }, []);
 
   const categories = ['All', ...Array.from(new Set(destinations.map(d => d.category)))];
 
@@ -60,7 +77,7 @@ export const MapView: React.FC<MapViewProps> = ({
     return matchesProvince && matchesCategory;
   });
 
-  if (!hasValidKey) {
+  if (!hasValidKey || authFailed) {
     return (
       <OpenStreetMapFallback
         destinations={destinations}
