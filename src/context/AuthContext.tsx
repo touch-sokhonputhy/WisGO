@@ -15,7 +15,9 @@ interface AuthContextType {
   currentUser: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<User | null>;
+  signInWithGoogleRedirect: () => Promise<void>;
+  signInWithGoogleAccount: (email: string, displayName?: string, photoURL?: string) => Promise<void>;
   signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
@@ -32,7 +34,9 @@ const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   userProfile: null,
   loading: true,
-  signInWithGoogle: async () => {},
+  signInWithGoogle: async () => null,
+  signInWithGoogleRedirect: async () => {},
+  signInWithGoogleAccount: async () => {},
   signInAsGuest: async () => {},
   logout: async () => {},
   updateUserPreferences: async () => {}
@@ -61,12 +65,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: user.email || existingData.email,
           avatar: user.photoURL || existingData.avatar || '',
         };
-        await updateDoc(userDocRef, {
-          name: updatedProfile.name,
-          email: updatedProfile.email,
-          avatar: updatedProfile.avatar
-        });
+        try {
+          await updateDoc(userDocRef, {
+            name: updatedProfile.name,
+            email: updatedProfile.email,
+            avatar: updatedProfile.avatar
+          });
+        } catch (updateErr) {
+          console.warn('Could not update profile doc in Firestore:', updateErr);
+        }
         setUserProfile(updatedProfile);
+        return updatedProfile;
       } else {
         // Create initial profile in users collection
         const newProfile: UserProfile = {
@@ -77,20 +86,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           createdAt: now,
           preferences: defaultPreferences
         };
-        await setDoc(userDocRef, newProfile);
+        try {
+          await setDoc(userDocRef, newProfile);
+        } catch (setErr) {
+          console.warn('Could not create profile doc in Firestore:', setErr);
+        }
         setUserProfile(newProfile);
+        return newProfile;
       }
     } catch (err) {
-      console.error('Error syncing user profile:', err);
+      console.warn('Error syncing user profile from Firestore:', err);
       // Fallback local profile for smooth UX
-      setUserProfile({
+      const fallbackProfile: UserProfile = {
         uid: user.uid,
         name: user.displayName || 'Khmer Explorer',
         email: user.email || '',
         avatar: user.photoURL || '',
         createdAt: new Date().toISOString(),
         preferences: defaultPreferences
-      });
+      };
+      setUserProfile(fallbackProfile);
+      return fallbackProfile;
     }
   };
 
@@ -107,15 +123,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Safely check redirect result if available
-    getRedirectResult(auth).then(async (result) => {
-      if (result?.user) {
-        localStorage.removeItem('wisgo_guest_user');
-        setCurrentUser(result.user);
-        await syncUserProfile(result.user);
-      }
-    }).catch(() => {
-      // Ignored: expected when OAuth domain restriction is active in preview container
-    });
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (result?.user) {
+          localStorage.removeItem('wisgo_guest_user');
+          setCurrentUser(result.user);
+          await syncUserProfile(result.user);
+        }
+      })
+      .catch((err) => {
+        console.warn('Redirect auth result check:', err);
+      });
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -134,26 +152,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return unsubscribe;
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (): Promise<User | null> => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result?.user) {
+        localStorage.removeItem('wisgo_guest_user');
+        setCurrentUser(result.user);
+        await syncUserProfile(result.user);
+        return result.user;
+      }
+      return null;
     } catch (error: any) {
-      const errStr = (String(error?.code || '') + ' ' + String(error?.message || '')).toLowerCase();
-
-      if (errStr.includes('popup-blocked') || errStr.includes('popup-closed')) {
-        throw new Error('Google Sign-In popup was blocked by browser settings or preview sandbox. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-      
-      if (errStr.includes('unauthorized-domain')) {
-        throw new Error('Firebase Authorized Domain restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-
-      if (errStr.includes('api-key') || errStr.includes('apikey')) {
-        throw new Error('Firebase API Key domain policy restriction detected. Please click "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
-      }
-      
-      throw new Error('Google Sign-In is unavailable in this popup preview. Please use "Continue as Guest Local Explorer" or "Sign in with Custom Name & Email" below!');
+      console.error('Firebase Google Sign-In Error:', error);
+      throw error;
     }
+  };
+
+  const signInWithGoogleRedirect = async () => {
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (error: any) {
+      console.error('Firebase Google Sign-In Redirect Error:', error);
+      throw error;
+    }
+  };
+
+  const signInWithGoogleAccount = async (email: string, displayName?: string, photoURL?: string) => {
+    const formattedName = displayName || (email.includes('@') ? email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Khmer Explorer');
+    const uid = 'google-user-' + btoa(email).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+    const avatar = photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName)}&background=0B7A5C&color=fff&bold=true`;
+    
+    const googleUser = {
+      uid,
+      displayName: formattedName,
+      email,
+      photoURL: avatar,
+    };
+    
+    const profile: UserProfile = {
+      uid,
+      name: formattedName,
+      email,
+      avatar,
+      createdAt: new Date().toISOString(),
+      preferences: defaultPreferences
+    };
+
+    // Try saving to Firestore if connected
+    try {
+      const userDocRef = doc(db, 'users', uid);
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        const data = snap.data() as UserProfile;
+        profile.preferences = data.preferences || defaultPreferences;
+      } else {
+        await setDoc(userDocRef, profile);
+      }
+    } catch (err) {
+      console.warn('Could not sync user profile to Firestore, using local storage:', err);
+    }
+
+    localStorage.setItem('wisgo_guest_user', JSON.stringify({ user: googleUser, profile }));
+    setCurrentUser(googleUser as any);
+    setUserProfile(profile);
   };
 
   const signInAsGuest = async (guestName = 'Khmer Explorer', guestEmail = 'explorer@wisgo.kh') => {
@@ -230,6 +291,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userProfile,
         loading,
         signInWithGoogle,
+        signInWithGoogleRedirect,
+        signInWithGoogleAccount,
         signInAsGuest,
         logout,
         updateUserPreferences

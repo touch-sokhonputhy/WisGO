@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import defaultConfig from '../../firebase-applet-config.json';
 
@@ -24,11 +24,29 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase App
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize Authentication & Google Auth Provider
 export const auth = getAuth(app);
+try {
+  auth.useDeviceLanguage();
+} catch (e) {
+  // Ignore in non-browser environments
+}
+
+// Ensure local persistence
+try {
+  setPersistence(auth, browserLocalPersistence).catch((err) => {
+    console.warn('Could not set Firebase auth persistence:', err);
+  });
+} catch (e) {
+  console.warn('Auth persistence initialization skipped:', e);
+}
+
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+googleProvider.addScope('openid');
 googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
@@ -40,3 +58,4 @@ export const db = customDbId && customDbId !== '(default)'
   : getFirestore(app);
 
 export default app;
+
