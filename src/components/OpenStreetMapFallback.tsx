@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Destination } from '../types';
-import { Compass, Filter, MapPin, Heart, Sparkles, Navigation, Layers, Info, Star } from 'lucide-react';
+import { Compass, Filter, Heart, Sparkles, Navigation, Layers, Info, Star } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface OpenStreetMapFallbackProps {
   destinations: Destination[];
@@ -22,9 +23,9 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
   onToggleSaveSpot,
   onAskAI,
   selectedProvince = 'All',
-  onSelectProvince,
-  onShowKeyModal
+  onSelectProvince
 }) => {
+  const { language, tProvince, tCategory } = useLanguage();
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
@@ -35,7 +36,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
   const [mapStyle, setMapStyle] = useState<'streets' | 'satellite' | 'topo'>('streets');
   const [showConfigNotice, setShowConfigNotice] = useState<boolean>(false);
 
-  const categories = ['All', ...Array.from(new Set(destinations.map(d => d.category)))];
+  const rawCategories = ['All', ...Array.from(new Set(destinations.map(d => d.category)))];
 
   const filteredDestinations = destinations.filter(d => {
     const matchesProvince = selectedProvince === 'All' || d.province === selectedProvince;
@@ -98,108 +99,117 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
 
   // Update Markers when destinations or filters change
   useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
+    if (!mapInstanceRef.current) return;
 
-    // Clear old markers
-    Object.values(markersRef.current).forEach((marker: L.Marker) => marker.remove());
+    // Clear previous markers
+    Object.values(markersRef.current).forEach(m => m.remove());
     markersRef.current = {};
 
     filteredDestinations.forEach(dest => {
       const isSaved = savedSpotIds.includes(dest.id);
-      const isSelected = selectedDestination?.id === dest.id;
+      const pinColor = isSaved ? '#E11D48' : '#0B7A5C';
+      const destTitle = (language === 'km' && dest.khmerTitle) ? dest.khmerTitle : dest.title;
 
-      const pinColor = isSelected ? '#21C87A' : isSaved ? '#E11D48' : '#0B7A5C';
-
-      // Custom Leaflet DivIcon
+      // Custom SVG Pin Icon
       const customIcon = L.divIcon({
         className: 'custom-leaflet-marker',
         html: `
           <div style="
-            position: relative;
-            width: 32px;
-            height: 32px;
-            background-color: ${pinColor};
-            border: 2px solid #ffffff;
+            background: ${pinColor};
+            width: 28px;
+            height: 28px;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            cursor: pointer;
           ">
             <div style="
-              width: 12px;
-              height: 12px;
-              background-color: #ffffff;
+              width: 8px;
+              height: 8px;
+              background: white;
               border-radius: 50%;
               transform: rotate(45deg);
             "></div>
           </div>
         `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32]
+        iconSize: [28, 28],
+        iconAnchor: [14, 28],
+        popupAnchor: [0, -28]
       });
 
-      const marker = L.marker([dest.location.lat, dest.location.lng], { icon: customIcon }).addTo(map);
+      const marker = L.marker([dest.location.lat, dest.location.lng], { icon: customIcon });
 
       marker.on('click', () => {
         setSelectedDestination(dest);
-        map.panTo([dest.location.lat, dest.location.lng], { animate: true });
+        mapInstanceRef.current?.panTo([dest.location.lat, dest.location.lng]);
       });
 
+      marker.bindTooltip(destTitle, {
+        permanent: false,
+        direction: 'top',
+        className: 'font-sans text-xs font-semibold px-2 py-1 bg-white text-slate-800 rounded-lg shadow-md border border-slate-200'
+      });
+
+      marker.addTo(mapInstanceRef.current!);
       markersRef.current[dest.id] = marker;
     });
-  }, [filteredDestinations, savedSpotIds, selectedDestination]);
+  }, [filteredDestinations, savedSpotIds, language]);
 
+  // Center on selected spot
   const handleSelectSpot = (dest: Destination) => {
     setSelectedDestination(dest);
     if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView([dest.location.lat, dest.location.lng], 12, { animate: true });
+      mapInstanceRef.current.flyTo([dest.location.lat, dest.location.lng], 12, { duration: 1.2 });
     }
   };
 
   const handleResetView = () => {
     setSelectedDestination(null);
     if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView(CAMBODIA_CENTER, DEFAULT_ZOOM, { animate: true });
+      mapInstanceRef.current.flyTo(CAMBODIA_CENTER, DEFAULT_ZOOM, { duration: 1.0 });
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Top Banner & Control Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col gap-3">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      {/* Map Control Bar */}
+      <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#DFF7ED] text-[#0B7A5C]">
-              <Compass className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-xl bg-[#DFF7ED] text-[#0B7A5C] flex items-center justify-center font-bold">
+              <Compass className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#1E293B]">
-                Interactive Cambodia Map ({filteredDestinations.length} Destinations)
+              <h3 className="font-bold text-xs sm:text-sm text-[#1E293B] flex items-center gap-2">
+                <span>
+                  {language === 'km'
+                    ? `ផែនទីអន្តរកម្មកម្ពុជា (${filteredDestinations.length} ទីតាំង)`
+                    : `Interactive Cambodia Map (${filteredDestinations.length} Spots)`}
+                </span>
               </h3>
-              <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Powered by OpenStreetMap (Free • No API Key Needed)</span>
+              <p className="text-[11px] text-slate-500">
+                {language === 'km'
+                  ? 'ចុចលើទីតាំងដើម្បីមើលព័ត៌មានលម្អិត និងបន្ថែមទៅក្នុងគម្រោង'
+                  : 'Click markers to explore destinations & calculate itineraries'}
               </p>
             </div>
           </div>
 
-          {/* Action buttons */}
+          {/* Map Layer Switcher */}
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Tile Style Selector */}
-            <div className="flex items-center gap-1 bg-[#F8FCFA] border border-slate-200 p-1 rounded-xl text-xs font-semibold">
-              <Layers className="w-3.5 h-3.5 text-slate-400 ml-1.5" />
+            <div className="flex items-center bg-[#F8FCFA] p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+              <Layers className="w-3.5 h-3.5 text-[#0B7A5C] mx-1.5" />
               <button
                 onClick={() => setMapStyle('streets')}
                 className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                   mapStyle === 'streets' ? 'bg-[#0B7A5C] text-white' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Street
+                {language === 'km' ? 'ធម្មតា' : 'Street'}
               </button>
               <button
                 onClick={() => setMapStyle('satellite')}
@@ -207,7 +217,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                   mapStyle === 'satellite' ? 'bg-[#0B7A5C] text-white' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Satellite
+                {language === 'km' ? 'ផ្កាយរណប' : 'Satellite'}
               </button>
               <button
                 onClick={() => setMapStyle('topo')}
@@ -215,7 +225,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                   mapStyle === 'topo' ? 'bg-[#0B7A5C] text-white' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Terrain
+                {language === 'km' ? 'ភូមិសាស្ត្រ' : 'Terrain'}
               </button>
             </div>
 
@@ -223,7 +233,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
               onClick={handleResetView}
               className="px-3 py-1.5 bg-[#F8FCFA] hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-colors cursor-pointer"
             >
-              Reset Map
+              {language === 'km' ? 'កំណត់ផែនទីឡើងវិញ' : 'Reset Map'}
             </button>
 
             <button
@@ -231,7 +241,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
               className="px-3 py-1.5 bg-[#DFF7ED] hover:bg-[#c9f0df] text-[#0B7A5C] rounded-xl text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
             >
               <Info className="w-3.5 h-3.5" />
-              <span>Google Maps Info</span>
+              <span>{language === 'km' ? 'ព័ត៌មានផែនទី' : 'Google Maps Info'}</span>
             </button>
           </div>
         </div>
@@ -241,15 +251,17 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
           <div className="bg-[#F8FCFA] border border-emerald-200 rounded-xl p-3 text-xs text-slate-700 space-y-1.5 animate-in fade-in duration-200">
             <p className="font-bold text-[#0B7A5C] flex items-center gap-1.5">
               <Sparkles className="w-4 h-4" />
-              <span>Using Google Maps Platform (Optional)</span>
+              <span>{language === 'km' ? 'ដំណើរការផែនទី Google Maps (ជាជម្រើស)' : 'Using Google Maps Platform (Optional)'}</span>
             </p>
             <p className="text-slate-600">
-              WisGO works 100% interactively right now with OpenStreetMap! If you wish to switch to official Google Maps Platform vector satellite rendering:
+              {language === 'km'
+                ? 'WisGO ដំណើរការយ៉ាងពេញលេញជាមួយ OpenStreetMap ដោយផ្ទាល់! ប្រសិនបើអ្នកចង់ប្រើផ្កាយរណប Google Maps ផ្លូវការ៖'
+                : 'WisGO works 100% interactively right now with OpenStreetMap! If you wish to switch to official Google Maps Platform vector satellite rendering:'}
             </p>
             <ol className="list-decimal list-inside text-slate-600 space-y-1 pl-1">
-              <li>Open <strong>Settings</strong> (⚙️ gear icon in top right corner of AI Studio).</li>
-              <li>Select <strong>Secrets</strong>.</li>
-              <li>Add secret named <code className="bg-slate-200 px-1.5 py-0.5 rounded text-[#0B7A5C] font-mono">GOOGLE_MAPS_PLATFORM_KEY</code> with your Google Maps API key.</li>
+              <li>{language === 'km' ? 'បើក Settings (⚙️ រូបកង់ធ្មេញនៅខាងស្តាំលើ AI Studio)' : 'Open Settings (⚙️ gear icon in top right corner of AI Studio).'}</li>
+              <li>{language === 'km' ? 'ជ្រើសរើស Secrets' : 'Select Secrets.'}</li>
+              <li>{language === 'km' ? 'បន្ថែម Secret ឈ្មោះ GOOGLE_MAPS_PLATFORM_KEY ជាមួយ Key របស់អ្នក' : 'Add secret named GOOGLE_MAPS_PLATFORM_KEY with your Google Maps API key.'}</li>
             </ol>
           </div>
         )}
@@ -257,7 +269,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
         {/* Category Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pt-1 border-t border-slate-100">
           <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-          {categories.map(cat => (
+          {rawCategories.map(cat => (
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
@@ -267,7 +279,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                   : 'bg-[#F8FCFA] text-slate-600 border-slate-200 hover:border-slate-300'
               }`}
             >
-              {cat}
+              {cat === 'All' ? (language === 'km' ? 'ទាំងអស់' : 'All') : tCategory(cat)}
             </button>
           ))}
         </div>
@@ -290,7 +302,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#DFF7ED] text-[#0B7A5C]">
-                    {selectedDestination.province}
+                    {tProvince(selectedDestination.province)}
                   </span>
                   <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
                     <Star className="w-3.5 h-3.5 fill-amber-500" />
@@ -299,11 +311,13 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                 </div>
 
                 <h4 className="text-xs font-bold text-[#1E293B] truncate mt-1">
-                  {selectedDestination.title}
+                  {(language === 'km' && selectedDestination.khmerTitle) ? selectedDestination.khmerTitle : selectedDestination.title}
                 </h4>
-                <p className="text-[11px] text-[#0B7A5C] font-semibold">
-                  {selectedDestination.khmerName}
-                </p>
+                {selectedDestination.khmerName && language !== 'km' && (
+                  <p className="text-[11px] text-[#0B7A5C] font-semibold">
+                    {selectedDestination.khmerName}
+                  </p>
+                )}
 
                 <div className="flex items-center gap-2 mt-2">
                   <button
@@ -315,7 +329,11 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                     }`}
                   >
                     <Heart className="w-3 h-3 fill-current" />
-                    <span>{savedSpotIds.includes(selectedDestination.id) ? 'Saved' : 'Save'}</span>
+                    <span>
+                      {savedSpotIds.includes(selectedDestination.id)
+                        ? (language === 'km' ? 'បានរក្សាទុក' : 'Saved')
+                        : (language === 'km' ? 'រក្សាទុក' : 'Save')}
+                    </span>
                   </button>
 
                   <button
@@ -323,7 +341,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                     className="px-2.5 py-1 bg-[#0B7A5C] text-white rounded-lg text-[11px] font-bold flex items-center gap-1 hover:bg-[#086048] transition-colors cursor-pointer"
                   >
                     <Sparkles className="w-3 h-3 text-[#21C87A]" />
-                    <span>Ask AI</span>
+                    <span>{language === 'km' ? 'សួរ AI' : 'Ask AI'}</span>
                   </button>
 
                   <a
@@ -335,7 +353,7 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                     className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
                   >
                     <Navigation className="w-3 h-3 text-[#0B7A5C]" />
-                    <span>Directions</span>
+                    <span>{language === 'km' ? 'ទិសដៅ' : 'Directions'}</span>
                   </a>
                 </div>
               </div>
@@ -347,10 +365,10 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
         <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-xs flex flex-col h-full overflow-hidden">
           <div className="pb-3 border-b border-slate-100 flex items-center justify-between">
             <h4 className="text-xs font-bold text-[#1E293B] uppercase tracking-wider">
-              Destinations ({filteredDestinations.length})
+              {language === 'km' ? `ទីតាំង (${filteredDestinations.length})` : `Destinations (${filteredDestinations.length})`}
             </h4>
             <span className="text-[11px] font-semibold text-[#0B7A5C]">
-              {selectedProvince}
+              {tProvince(selectedProvince)}
             </span>
           </div>
 
@@ -358,6 +376,8 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
             {filteredDestinations.map(dest => {
               const isSelected = selectedDestination?.id === dest.id;
               const isSaved = savedSpotIds.includes(dest.id);
+              const destTitle = (language === 'km' && dest.khmerTitle) ? dest.khmerTitle : dest.title;
+              const destProvince = tProvince(dest.province);
 
               return (
                 <div
@@ -371,14 +391,16 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                 >
                   <img
                     src={dest.image}
-                    alt={dest.title}
+                    alt={destTitle}
                     className="w-14 h-14 rounded-xl object-cover shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-[#1E293B] truncate">{dest.title}</p>
-                    <p className="text-[11px] text-[#0B7A5C] font-semibold">{dest.khmerName}</p>
+                    <p className="text-xs font-bold text-[#1E293B] truncate">{destTitle}</p>
+                    {dest.khmerName && language !== 'km' && (
+                      <p className="text-[11px] text-[#0B7A5C] font-semibold">{dest.khmerName}</p>
+                    )}
                     <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-500">
-                      <span>{dest.province}</span>
+                      <span>{destProvince}</span>
                       <span>•</span>
                       <span className="font-semibold text-amber-600">★ {dest.rating}</span>
                     </div>

@@ -57,11 +57,16 @@ export interface Destination {
   tags?: string[];
   transportTips?: string;
   khmerName?: string;
+  khmerTitle?: string;
+  khmerDescription?: string;
+  khmerEntryFee?: string;
+  khmerTransportTips?: string;
   entryFee?: string;
 }
 
 export interface ItineraryItem {
   time?: string;
+  duration?: string;
   title: string;
   description: string;
   destinationId?: string;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Sparkles, MapPin, ShieldCheck, User, Mail, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
 
 interface AuthModalProps {
@@ -10,6 +11,7 @@ interface AuthModalProps {
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { signInWithGoogle, signInAsGuest } = useAuth();
+  const { language, t } = useLanguage();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showCustomForm, setShowCustomForm] = useState(false);
@@ -37,7 +39,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     try {
       setLoading(true);
       setError(null);
-      await signInAsGuest('Local Khmer Explorer', 'explorer@wisgo.kh');
+      const defaultGuestName = language === 'km' ? 'អ្នករុករកកម្ពុជា' : 'Local Khmer Explorer';
+      await signInAsGuest(defaultGuestName, 'explorer@wisgo.kh');
       onClose();
     } catch (err: any) {
       setError('Failed to start guest session');
@@ -49,7 +52,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleCustomAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) {
-      setError('Please enter your name');
+      setError(language === 'km' ? 'សូមបញ្ចូលឈ្មោះរបស់អ្នក' : 'Please enter your name');
       return;
     }
     try {
@@ -82,9 +85,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="w-14 h-14 bg-[#0B7A5C] text-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md border border-[#21C87A]/30">
             <WisgoLogo className="w-9 h-9" strokeColor="#ffffff" />
           </div>
-          <h2 className="text-2xl font-bold text-[#1E293B] tracking-tight">Welcome to WisGO</h2>
+          <h2 className="text-2xl font-bold text-[#1E293B] tracking-tight">{t('auth.title', 'Welcome to WisGO')}</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Cambodian youth-led local travel platform for authentic Khmer tourism.
+            {t('auth.subtitle', 'Cambodian youth-led local travel platform for authentic Khmer tourism.')}
           </p>
         </div>
 
@@ -93,16 +96,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-[#F8FCFA] border border-slate-200">
             <Sparkles className="w-4 h-4 text-[#21C87A] shrink-0 mt-0.5" />
             <div className="text-xs">
-              <p className="font-bold text-[#1E293B]">Authentic Local Youth Insights</p>
-              <p className="text-slate-600">Gemini-powered Khmer itineraries, local transport tips & food guide.</p>
+              <p className="font-bold text-[#1E293B]">{t('auth.feature_1_title', 'Authentic Local Youth Insights')}</p>
+              <p className="text-slate-600">{t('auth.feature_1_desc', 'Gemini-powered Khmer itineraries, local transport tips & food guide.')}</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3 p-2.5 rounded-2xl bg-[#F8FCFA] border border-slate-200">
             <MapPin className="w-4 h-4 text-[#0B7A5C] shrink-0 mt-0.5" />
             <div className="text-xs">
-              <p className="font-bold text-[#1E293B]">Save Destinations & Plan Trips</p>
-              <p className="text-slate-600">Sync saved spots across Siem Reap, Kampot, Battambang & Phnom Penh.</p>
+              <p className="font-bold text-[#1E293B]">{t('auth.feature_2_title', 'Interactive Trip Planner & Maps')}</p>
+              <p className="text-slate-600">{t('auth.feature_2_desc', 'Drag-and-drop itinerary creator with Google Maps integration.')}</p>
             </div>
           </div>
         </div>
@@ -116,13 +119,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         {showCustomForm ? (
           <form onSubmit={handleCustomAccountSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                {language === 'km' ? 'ឈ្មោះរបស់អ្នក' : 'Your Name'}
+              </label>
               <div className="relative">
                 <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Sopheak Dara"
+                  placeholder={language === 'km' ? 'ឧ. សុភា តារា' : 'e.g. Sopheak Dara'}
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-[#0B7A5C] outline-none"
@@ -131,7 +136,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Email Address (Optional)</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                {language === 'km' ? 'អ៊ីមែល (ជាជម្រើស)' : 'Email Address (Optional)'}
+              </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
@@ -149,7 +156,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               disabled={loading}
               className="w-full py-3 px-4 rounded-xl bg-[#0B7A5C] hover:bg-[#08634a] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>{loading ? 'Creating Account...' : 'Sign In as Explorer Account'}</span>
+              <span>{loading ? (language === 'km' ? 'កំពុងបង្កើតគណនី...' : 'Creating Account...') : (language === 'km' ? 'ចូលគណនីអ្នករុករក' : 'Sign In as Explorer Account')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
@@ -158,7 +165,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               onClick={() => setShowCustomForm(false)}
               className="w-full text-center text-xs text-slate-500 hover:text-slate-800 py-1 font-medium cursor-pointer"
             >
-              ← Back to all options
+              {language === 'km' ? '← ត្រឡប់ទៅជម្រើសទាំងអស់' : '← Back to all options'}
             </button>
           </form>
         ) : (
@@ -170,7 +177,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               className="w-full py-3.5 px-4 rounded-2xl bg-[#0B7A5C] hover:bg-[#08634a] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <User className="w-4 h-4 text-[#21C87A]" />
-              <span>Continue as Guest Local Explorer</span>
+              <span>{t('auth.guest_btn', 'Continue as Guest Explorer')}</span>
             </button>
 
             <button
@@ -178,12 +185,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               className="w-full py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#0B7A5C] font-semibold text-xs border border-emerald-200/80 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Mail className="w-4 h-4" />
-              <span>Sign in with Custom Name & Email</span>
+              <span>{t('auth.custom_btn', 'Create Instant Local Profile')}</span>
             </button>
 
             <div className="relative flex items-center my-2">
               <div className="flex-grow border-t border-slate-200"></div>
-              <span className="flex-shrink mx-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">or Google Account</span>
+              <span className="flex-shrink mx-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                {language === 'km' ? 'ឬ គណនី Google' : 'or Google Account'}
+              </span>
               <div className="flex-grow border-t border-slate-200"></div>
             </div>
 
@@ -211,14 +220,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>{loading ? 'Connecting...' : 'Sign in with Google'}</span>
+              <span>{loading ? (language === 'km' ? 'កំពុងភ្ជាប់...' : 'Connecting...') : t('auth.google_btn', 'Continue with Google')}</span>
             </button>
           </div>
         )}
 
         <p className="text-[11px] text-center text-slate-500 mt-4 flex items-center justify-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5 text-[#0B7A5C]" />
-          <span>Secured with Firebase Authentication & Local Storage</span>
+          <span>{language === 'km' ? 'ការពារសុវត្ថិភាពជាមួយ Firebase Authentication' : 'Secured with Firebase Authentication & Local Storage'}</span>
         </p>
 
       </div>

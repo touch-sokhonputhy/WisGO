@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, Bot, User, Globe, DollarSign, Languages, Compass, Loader2, Coins } from 'lucide-react';
+import Markdown from 'react-markdown';
+import { Send, Bot, User, Globe, DollarSign, Languages, Compass, Loader2, Coins } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { ChatMessage } from '../types';
 import { CurrencyConverter } from './CurrencyConverter';
 import { WisgoLogo } from './WisgoLogo';
@@ -11,12 +13,20 @@ interface AIAssistantProps {
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
   const { userProfile } = useAuth();
+  const { language, t } = useLanguage();
+
+  const getWelcomeMessage = (lang: 'en' | 'km'): string => {
+    if (lang === 'km') {
+      return `សូមស្វាគមន៍មកកាន់ប្រទេសកម្ពុជា! 🇰🇭 ខ្ញុំជា **WisGO AI** ជាមគ្គុទ្ទេសក៍ទេសចរណ៍យុវជនក្នុងស្រុក និងជាជំនួយការធ្វើដំណើរផ្ទាល់ខ្លួនរបស់អ្នក។\n\nខ្ញុំអាចជួយអ្នក **រៀបចំគម្រោងដំណើរកម្សាន្ត**, ប៉ាន់ស្មានតម្លៃធ្វើដំណើរ PassApp/កង់បី, ណែនាំហាងម្ហូបឆ្ងាញ់ៗ (អាម៉ុកត្រី, បាយឡុកឡាក់, ក្តាមឆាម្រេចខ្ចីកំពត) និងបង្រៀនឃ្លាភាសាខ្មែរងាយៗ។\n\nតើអ្នកចង់ឱ្យខ្ញុំជួយរៀបចំដំណើរកម្សាន្តអ្វីខ្លះនៅថ្ងៃនេះ?`;
+    }
+    return `Som Swakum! 🇰🇭 I'm **WisGO AI**, your authentic Cambodian youth local guide and travel assistant.\n\nI can build **custom Khmer itineraries**, estimate PassApp/tuk-tuk fare prices, recommend street food spots (Fish Amok, Lok Lak, Crab with Kampot pepper), and provide polite Khmer phrase pronunciations.\n\nHow can I help you explore Cambodia today?`;
+  };
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'msg-welcome',
       sender: 'assistant',
-      text: `Som Swakum! 🇰🇭 I'm **WisGO AI**, your authentic Cambodian youth local guide and travel assistant.\n\nI can build **custom Khmer itineraries**, estimate PassApp/tuk-tuk fare prices, recommend street food spots (Fish Amok, Lok Lak, Crab with Kampot pepper), and provide polite Khmer phrase pronunciations.\n\nHow can I help you explore Cambodia today?`,
+      text: getWelcomeMessage(language),
       timestamp: new Date()
     }
   ]);
@@ -25,6 +35,21 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
   const [loading, setLoading] = useState(false);
   const [showConverterMobile, setShowConverterMobile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Update initial welcome message if no user interaction yet
+  useEffect(() => {
+    setMessages(prev => {
+      if (prev.length === 1 && prev[0].id === 'msg-welcome') {
+        return [{
+          id: 'msg-welcome',
+          sender: 'assistant',
+          text: getWelcomeMessage(language),
+          timestamp: new Date()
+        }];
+      }
+      return prev;
+    });
+  }, [language]);
 
   useEffect(() => {
     if (initialPrompt) {
@@ -61,7 +86,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: textToSend,
-          userPreferences: userProfile?.preferences
+          userPreferences: {
+            ...userProfile?.preferences,
+            preferredLanguage: language === 'km' ? 'Khmer' : 'English'
+          }
         })
       });
 
@@ -84,7 +112,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
       const errorMsg: ChatMessage = {
         id: `msg-err-${Date.now()}`,
         sender: 'assistant',
-        text: `⚠️ **WisGO Notice:** I couldn't process that query right now (${err.message || 'Server error'}). Please ensure your Gemini API key is configured or try again in a moment!`,
+        text: language === 'km'
+          ? `⚠️ **WisGO សេចក្តីជូនដំណឹង:** មិនអាចដំណើរការសំណួរនេះបានទេនៅពេលនេះ (${err.message || 'Server error'})។ សូមពិនិត្យមើលការកំណត់ Gemini API Key ឬព្យាយាមម្តងទៀតនៅពេលបន្តិចក្រោយ!`
+          : `⚠️ **WisGO Notice:** I couldn't process that query right now (${err.message || 'Server error'}). Please ensure your Gemini API key is configured or try again in a moment!`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMsg]);
@@ -95,24 +125,24 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
 
   const quickPrompts = [
     {
-      label: '3-Day Siem Reap & Angkor Itinerary',
+      label: t('assistant.starter_1', '3-Day Siem Reap & Angkor Itinerary'),
       icon: Compass,
-      query: 'Generate a 3-day authentic Siem Reap itinerary including Angkor Wat sunrise, Bayon, and Pub Street Khmer street food.'
+      query: t('assistant.starter_1_q', 'Generate a 3-day authentic Siem Reap itinerary including Angkor Wat sunrise, Bayon, and Pub Street Khmer street food.')
     },
     {
-      label: 'Kampot & Kep Weekend Trip',
+      label: t('assistant.starter_2', 'Kampot & Kep Weekend Trip'),
       icon: Globe,
-      query: 'What is the best 2-day plan to experience Kampot pepper farms, kayaking down the river, and fresh Kep crab market?'
+      query: t('assistant.starter_2_q', 'What is the best 2-day plan to experience Kampot pepper farms, kayaking down the river, and fresh Kep crab market?')
     },
     {
-      label: 'Essential Khmer Phrases',
+      label: t('assistant.starter_3', 'Essential Khmer Phrases'),
       icon: Languages,
-      query: 'Provide 5 essential Khmer phrases for ordering food and greeting locals, written with English phonetics.'
+      query: t('assistant.starter_3_q', 'Provide 5 essential Khmer phrases for ordering food and greeting locals, written with English phonetics and Khmer script.')
     },
     {
-      label: 'PassApp Tuk-Tuk & Currency Guide',
+      label: t('assistant.starter_4', 'PassApp Tuk-Tuk & Currency Guide'),
       icon: DollarSign,
-      query: 'Explain USD ($) and Cambodian Riel (KHR) dual currency usage, PassApp tuk-tuk pricing, and tipping in Cambodia.'
+      query: t('assistant.starter_4_q', 'Explain USD ($) and Cambodian Riel (KHR) dual currency usage, PassApp tuk-tuk pricing, and tipping in Cambodia.')
     }
   ];
 
@@ -130,10 +160,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
             </div>
             <div>
               <h3 className="font-bold text-[#1E293B] text-base flex items-center gap-2">
-                <span>WisGO AI Local Travel Assistant</span>
+                <span>{t('assistant.title', 'WisGO AI Local Travel Assistant')}</span>
               </h3>
               <p className="text-xs text-slate-500">
-                Powered by Gemini 3.6 Flash • Context: {userProfile?.preferences?.preferredLanguage || 'English'} ({userProfile?.preferences?.preferredCurrency || 'USD'})
+                {t('assistant.subtitle', 'Powered by Gemini 3.6 Flash')} • {language === 'km' ? 'ភាសា៖ ខ្មែរ' : 'Language: English'} ({userProfile?.preferences?.preferredCurrency || 'USD'})
               </p>
             </div>
           </div>
@@ -185,12 +215,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
               </div>
 
               {/* Bubble */}
-              <div className={`max-w-[85%] sm:max-w-[78%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+              <div className={`max-w-[88%] sm:max-w-[82%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                 msg.sender === 'user'
                   ? 'bg-[#0B7A5C] text-white font-medium rounded-tr-none shadow-xs'
-                  : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none whitespace-pre-wrap shadow-xs'
+                  : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none shadow-xs'
               }`}>
-                {msg.text}
+                {msg.sender === 'user' ? (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                ) : (
+                  <div className="markdown-body">
+                    <Markdown>{msg.text}</Markdown>
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -202,7 +238,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
               </div>
               <div className="p-3.5 rounded-2xl bg-white border border-slate-200 text-xs text-[#0B7A5C] flex items-center gap-2 shadow-xs">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>WisGO AI is preparing local Cambodian insights...</span>
+                <span>{t('assistant.loading', 'WisGO AI is preparing local Cambodian insights...')}</span>
               </div>
             </div>
           )}
@@ -221,7 +257,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ initialPrompt }) => {
           >
             <input
               type="text"
-              placeholder="Ask anything about Siem Reap, Kampot pepper, Kep crab, or PassApp tuk-tuks..."
+              placeholder={t('assistant.input_placeholder', 'Ask anything about Siem Reap, Kampot pepper, Kep crab, or PassApp tuk-tuks...')}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading}
