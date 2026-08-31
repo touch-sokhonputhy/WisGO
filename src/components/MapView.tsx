@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import { Destination } from '../types';
+import { getDirectImageUrl } from '../lib/imageUtils';
 import { Star, Heart, Sparkles, Filter, Compass } from 'lucide-react';
 import { OpenStreetMapFallback } from './OpenStreetMapFallback';
 import { useLanguage } from '../context/LanguageContext';
@@ -178,8 +179,9 @@ export const MapView: React.FC<MapViewProps> = ({
                   <div className="p-1 max-w-xs text-slate-800 font-sans">
                     <div className="relative rounded-xl overflow-hidden mb-2.5 h-28 bg-slate-100">
                       <img
-                        src={selectedDestination.image}
+                        src={getDirectImageUrl(selectedDestination.image)}
                         alt={selectedDestination.title}
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
                       />
                       <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-[10px] font-bold text-[#0B7A5C]">

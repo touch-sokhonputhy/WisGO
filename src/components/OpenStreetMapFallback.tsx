@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Destination } from '../types';
+import { getDirectImageUrl } from '../lib/imageUtils';
 import { Compass, Filter, Heart, Sparkles, Navigation, Layers, Info, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -390,8 +391,9 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                   }`}
                 >
                   <img
-                    src={dest.image}
+                    src={getDirectImageUrl(dest.image)}
                     alt={destTitle}
+                    referrerPolicy="no-referrer"
                     className="w-14 h-14 rounded-xl object-cover shrink-0"
                   />
                   <div className="flex-1 min-w-0">

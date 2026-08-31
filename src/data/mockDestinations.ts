@@ -17,7 +17,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Angkor Archaeological Park, Siem Reap',
       province: 'Siem Reap'
     },
-    image: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1_Vof4VuALao8BrBzNi_zPFMtUjeHGhDb/view?usp=sharing',
     tags: ['UNESCO World Heritage', 'Sunrise View', 'Ancient Temples', 'Khmer History'],
     transportTips: 'Hire a local PassApp tuk-tuk for $15–$20 full day circuit.',
     entryFee: '$37 (1-Day Angkor Pass)'
@@ -37,7 +37,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Angkor Archaeological Park, Siem Reap',
       province: 'Siem Reap'
     },
-    image: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1JFAuz1SwkjHf0Kqlx_PGvr2XDaX7bN1I/view?usp=drive_link',
     tags: ['Giant Banyan Roots', 'Tomb Raider', 'Photographic Spot', 'Khmer Heritage'],
     transportTips: 'Include in your Angkor Small Circuit tuk-tuk day tour.',
     entryFee: 'Included in Angkor Pass'
@@ -57,7 +57,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Banteay Srei District, 32km North of Siem Reap',
       province: 'Siem Reap'
     },
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1fRcoiN3lu_xPheHYDOWd-quZ_L2RgQuu/view?usp=drive_link',
     tags: ['Pink Sandstone', 'Intricate Reliefs', 'Jewel of Khmer Art', 'Devata Statues'],
     transportTips: 'Combine with Landmine Museum or Phnom Kulen trip via tuk-tuk or AC car ($25-$35).',
     entryFee: 'Included in Angkor Pass'
@@ -77,7 +77,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Kampong Phluk, Prasat Bakong, Siem Reap',
       province: 'Siem Reap'
     },
-    image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1WmRrNfhJQf7utTqEvZvZVBUV2P-07pT0/view?usp=drive_link',
     tags: ['Freshwater Lake', 'Stilt Houses', 'Mangrove Forest Canoe', 'Local Fishermen'],
     transportTips: '30km drive from Siem Reap city. Boat tickets approx $20 per person.',
     entryFee: '$20 Boat Tour Ticket'
@@ -139,7 +139,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Chaktomuk Waterfront, Sisowath Quay, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://drive.google.com/file/d/1Y5Y2kpDerh2X7vU1eE_2R0DjYz0TML5n/view?usp=sharing',
     tags: ['Chaktomuk Walk Street', 'Phnom Penh Night Market', 'Sisowath Quay', 'Weekend Pedestrian Zone', 'Street Food Stalls'],
     transportTips: 'Located along Sisowath Quay waterfront near Night Market. $1.50 PassApp tuk-tuk.',
     entryFee: 'Free Admission'
@@ -159,7 +159,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Street 308 & Bassac Lane, Tonle Bassac, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1PqMl6owX7NQuDtRV_RpvEzDHqEI9Ciln/view?usp=sharing',
     tags: ['Bassac Lane', 'Craft Cocktails', 'Creative Quarter', 'Trendy Nightlife'],
     transportTips: 'Located near Independence Monument. Easy $1.50 tuk-tuk ride.',
     entryFee: 'Free'
@@ -411,7 +411,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Choam Khsant District, Preah Vihear',
       province: 'Preah Vihear'
     },
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/161bqu-a3siz3Sis27hpqxXlfl6TNA4jQ/view?usp=sharing',
     tags: ['UNESCO World Heritage', 'Cliffside Views', 'Dângrêk Mountain', 'Khmer Masterpiece'],
     transportTips: '4WD mountain pickup or 1.5-hour drive from Siem Reap ($10 4WD ride to summit).',
     entryFee: '$10 ticket + local mountain transfer'
@@ -499,7 +499,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Krakor District, Pursat Province',
       province: 'Pursat'
     },
-    image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1uiREUuD7F0pN9aWVzDpaYFy4dOnqnGU9/view?usp=sharing',
     tags: ['Floating City', 'Tonle Sap Community', 'Local River Life', 'Cultural Exploration'],
     transportTips: '35km from Pursat town. Hire a wooden motorboat at Krakor pier ($12-$15).',
     entryFee: '$10 boat tour ticket'

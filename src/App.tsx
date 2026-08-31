@@ -11,6 +11,7 @@ import { AIAssistant } from './components/AIAssistant';
 import { WeatherWidget } from './components/WeatherWidget';
 import { Destination } from './types';
 import { CAMBODIA_DESTINATIONS } from './data/mockDestinations';
+import { getDirectImageUrl, FALLBACK_BACKUP_IMAGE } from './lib/imageUtils';
 import { MapPin, Compass, Sparkles, Heart, Search, Filter, Route } from 'lucide-react';
 
 function MainApp() {
@@ -197,8 +198,16 @@ function MainApp() {
                       >
                         <div className="relative h-48 overflow-hidden bg-slate-100">
                           <img
-                            src={item.image}
+                            src={getDirectImageUrl(item.image)}
                             alt={item.title}
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.dataset.fallback) {
+                                target.dataset.fallback = 'true';
+                                target.src = FALLBACK_BACKUP_IMAGE;
+                              }
+                            }}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-[#0B7A5C] shadow-xs flex items-center gap-1">
@@ -343,7 +352,19 @@ function MainApp() {
                         transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                         className="bg-white border border-slate-200 rounded-3xl overflow-hidden p-4 flex gap-4 items-center shadow-xs"
                       >
-                        <img src={item.image} alt={item.title} className="w-20 h-20 rounded-2xl object-cover shrink-0" />
+                        <img
+                          src={getDirectImageUrl(item.image)}
+                          alt={item.title}
+                          referrerPolicy="no-referrer"
+                          className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.dataset.fallback) {
+                              target.dataset.fallback = 'true';
+                              target.src = FALLBACK_BACKUP_IMAGE;
+                            }
+                          }}
+                        />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-bold text-[#1E293B] truncate">{primaryTitle}</h3>
                           <p className="text-xs text-[#0B7A5C] font-semibold">{tProvince(item.province)}</p>
