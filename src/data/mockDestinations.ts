@@ -323,7 +323,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Kep National Park, Kep',
       province: 'Kep'
     },
-    image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1CNybntYGmC4WhkZ1b9aYigutpLxVYIsP/view?usp=sharing',
     tags: ['Jungle Hiking', 'Sunset Rock View', 'Ocean Panorama', 'Shaded Trail'],
     transportTips: 'Park entrance is near Led Zep Cafe behind Kep Beach. Scooter or foot access.',
     entryFee: '$1 Park Maintenance Ticket'
