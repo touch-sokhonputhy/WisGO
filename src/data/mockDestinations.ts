@@ -97,7 +97,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Pub Street & Alley West, Siem Reap',
       province: 'Siem Reap'
     },
-    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1ih3GUosdKM7QJltaVwdpxGfDLAikVz4I/view?usp=sharing',
     tags: ['Khmer Street Food', 'Fish Amok', 'Night Bazaar', 'Youth Hangout'],
     transportTips: 'Central location in Siem Reap city center. Easily walkable or $1.50 tuk-tuk.',
     entryFee: 'Free'
@@ -166,22 +166,22 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
   },
   {
     id: 'kh-pp-6',
-    title: 'Koh Pich (Diamond Island) Waterfront & Elysee Walk',
-    khmerName: 'កោះពេជ្រ និង ផ្លូវដើរកម្សាន្តអេលីហ្សេ',
+    title: 'Koh Norea',
+    khmerName: 'កោះនរា',
     province: 'Phnom Penh',
     category: 'Youth Experience',
-    rating: 4.7,
-    reviewCount: 12100,
-    description: 'Ultra-modern urban island promenade featuring colorful fountain shows, European-inspired architecture, riverfront food trucks, outdoor cycling, and glowing evening walk street.',
+    rating: 4.8,
+    reviewCount: 12400,
+    description: 'Vibrant modern riverfront development connected by the iconic cable-stayed bridge, featuring scenic Mekong & Bassac river views, breezy sunset promenades, trendy cafes, and lively youth hangout spots.',
     location: {
-      lat: 11.5528,
-      lng: 104.9412,
-      address: 'Koh Pich (Diamond Island), Phnom Penh',
+      lat: 11.5385,
+      lng: 104.9495,
+      address: 'Koh Norea, Khan Chbar Ampov, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=80',
-    tags: ['Koh Pich Diamond Island', 'Elysee Promenade', 'Food Trucks', 'Night Stroll'],
-    transportTips: 'Cross the Koh Pich bridge via tuk-tuk ($2). Great for evening strolls.',
+    image: 'https://drive.google.com/file/d/1NaclpKfr6Iup9cSFZm0KlJPzrCKLNPFT/view?usp=sharing',
+    tags: ['Koh Norea', 'Cable-Stayed Bridge', 'Riverfront Sunset', 'Youth Hangout'],
+    transportTips: 'Cross the Koh Norea Cable-Stayed Bridge from Koh Pich. Ideal for sunset walks and river breezes.',
     entryFee: 'Free'
   },
   {
@@ -199,7 +199,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Calmette St, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1CnS9aaOGFFN7tg3BkMJxCTZRYjnCxtF1/view?usp=sharing',
     tags: ['Art Deco Architecture', 'Souvenirs & Silver', 'Khmer Silk', 'Street Snacks'],
     transportTips: 'Located in the central city core. Easily reached by PassApp ($1–$2).',
     entryFee: 'Free'
@@ -219,7 +219,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Norodom Blvd, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1boO_9j8hKBrmnVaSglaPoXMX1QeHjSAN/view?usp=sharing',
     tags: ['Founding Hill', 'Lady Penh Sanctuary', 'Shady Park Walk', 'Historic Pagoda'],
     transportTips: 'Located at the northern end of Norodom Boulevard. $1.50 tuk-tuk.',
     entryFee: '$1 entrance for foreign visitors'
@@ -248,20 +248,20 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
   // KAMPOT
   {
     id: 'kh-kp-1',
-    title: 'Kampot Riverfront & Organic Pepper Plantations',
-    khmerName: 'ក្រុងកំពត និង ចម្ការម្រេច',
+    title: 'Kampot',
+    khmerName: 'ក្រុងកំពត',
     province: 'Kampot',
     category: 'Nature & Adventure',
     rating: 4.8,
     reviewCount: 8200,
-    description: 'Charming riverside town famed for world-class GI Kampot Pepper, kayaking down the Green Loop river, and sunsets over the Elephant Mountains.',
+    description: 'Charming riverside province famed for world-renowned GI Kampot Pepper, scenic French colonial shophouses, peaceful sunset river cruises, and pristine mountain views.',
     location: {
       lat: 10.6104,
       lng: 104.1816,
       address: 'Kampot Riverfront & Old Town, Kampot',
       province: 'Kampot'
     },
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1JBJEEmBXkhCZrYlXsi33zh9ZOylTWAU9/view?usp=sharing',
     tags: ['Kampot Pepper', 'River Kayaking', 'French Colonial Architecture', 'Firefly Cruise'],
     transportTips: 'Rent a motor scooter for $5/day or book a youth-guided river boat tour ($5).',
     entryFee: 'Free (Pepper farm tours usually free)'
@@ -281,7 +281,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Preah Monivong Bokor National Park, Kampot',
       province: 'Kampot'
     },
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1UUC46EoFXQOIApNz6bi_jJmZeJab6CLl/view?usp=sharing',
     tags: ['Cool Mountain Breeze', 'Lok Yeay Mao Statue', 'Mist & Clouds', 'French Colonial Ruins'],
     transportTips: '32km scenic winding mountain road from Kampot town. Scooter or taxi tour ($25).',
     entryFee: 'Free park entry'
@@ -303,7 +303,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Crab Market Road, Kep Promenade, Kep',
       province: 'Kep'
     },
-    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1m_yIa-4wKT-q2zjBG2cnaOAhImW-gUY4/view?usp=sharing',
     tags: ['Fresh Blue Crab', 'Kampot Pepper Crab', 'Seafood Sunset', 'Local Fishermen'],
     transportTips: '25-min drive from Kampot town ($8 tuk-tuk or scooter ride).',
     entryFee: 'Free entry (Crab meals approx $6 - $12/kg)'
@@ -345,7 +345,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'O Dambang Village & Phnom Sampov, Battambang',
       province: 'Battambang'
     },
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1aYefCy8O1FomdwoyctOWJmyIuTRiZ_Rh/view?usp=sharing',
     tags: ['Bamboo Train Norry', 'Millions of Bats', 'Dusk Spectacle', 'Rice Fields'],
     transportTips: 'Hire a friendly local youth guide with tuk-tuk for $15 half day.',
     entryFee: '$5 for Bamboo train ride'

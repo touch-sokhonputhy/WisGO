@@ -1,22 +1,24 @@
 /**
  * Utility to normalize image URLs, ensuring Google Drive links and other remote sources
- * resolve to direct high-speed streamable CDN URLs.
+ * resolve to direct high-speed streamable CDN URLs via wsrv.nl proxy.
  */
 export function getDirectImageUrl(url: string | undefined): string {
   if (!url) return '';
 
-  // Check if it's a Google Drive link
-  // e.g. https://drive.google.com/file/d/1_Vof4VuALao8BrBzNi_zPFMtUjeHGhDb/view?usp=sharing
-  // or https://drive.google.com/open?id=1_Vof4VuALao8BrBzNi_zPFMtUjeHGhDb
-  // or https://drive.google.com/uc?id=1_Vof4VuALao8BrBzNi_zPFMtUjeHGhDb
-  const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (driveFileMatch && driveFileMatch[1]) {
-    return `https://lh3.googleusercontent.com/d/${driveFileMatch[1]}`;
-  }
+  // Extract File ID from Google Drive URLs
+  // Handles:
+  // - https://drive.google.com/file/d/FILE_ID/view?usp=...
+  // - https://drive.google.com/open?id=FILE_ID
+  // - https://drive.google.com/uc?id=FILE_ID
+  // - https://lh3.googleusercontent.com/d/FILE_ID
+  const driveMatch =
+    url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+    url.match(/\/d\/([a-zA-Z0-9_-]+)/) ||
+    url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
 
-  const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (driveIdMatch && driveIdMatch[1] && url.includes('drive.google.com')) {
-    return `https://lh3.googleusercontent.com/d/${driveIdMatch[1]}`;
+  if (driveMatch && driveMatch[1]) {
+    const fileId = driveMatch[1];
+    return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}&export=download`;
   }
 
   return url;
