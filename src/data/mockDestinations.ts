@@ -239,7 +239,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Sisowath Quay Waterfront, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1Y7wwOqlLg1G1O7Y1CSwEQeVb3CmHwCcn/view?usp=sharing',
     tags: ['Mekong Sunset Cruise', 'Waterfront Promenade', 'Four Rivers Junction', 'City Skyline'],
     transportTips: '1-hour sunset boat cruises start at $5–$8 per seat at Kantha Bopha port.',
     entryFee: 'Free promenade ($5–$8 river cruise)'
