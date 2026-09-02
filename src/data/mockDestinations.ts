@@ -455,7 +455,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Tatai River Bridge, Koh Kong',
       province: 'Koh Kong'
     },
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/16Oar280b0Uk8NkvuLSDYU3wr_mtMxExz/view?usp=sharing',
     tags: ['Cardamom Mountains', 'Tatai River Waterfall', 'Floating Eco-Lodges', 'Jungle Kayaking'],
     transportTips: '20-min boat trip from Tatai Bridge. Easily reached via Koh Kong highway bus.',
     entryFee: '$2 local boat transfer to waterfall'
