@@ -226,23 +226,23 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
   },
   {
     id: 'kh-pp-3',
-    title: 'Sisowath Quay & Mekong Sunset River Cruise',
-    khmerName: 'មាត់ទន្លេចតុមុខ ភ្នំពេញ',
+    title: 'Royal Palace of Cambodia',
+    khmerName: 'ព្រះបរមរាជវាំងកម្ពុជា',
     province: 'Phnom Penh',
-    category: 'Nature & Culture',
-    rating: 4.7,
-    reviewCount: 8900,
-    description: 'Bustling 3km waterfront promenade along the junction of the Tonle Sap and Mekong rivers. Board wooden boats for golden hour sunset cruises.',
+    category: 'Temple & Heritage',
+    rating: 4.8,
+    reviewCount: 19500,
+    description: 'The official royal residence of King Norodom Sihamoni, featuring magnificent classical Khmer architecture, iconic golden tiered spires, and the Silver Pagoda paved with over 5,000 silver tiles and the Emerald Buddha.',
     location: {
-      lat: 11.5678,
-      lng: 104.9351,
-      address: 'Sisowath Quay Waterfront, Phnom Penh',
+      lat: 11.5625,
+      lng: 104.9312,
+      address: 'Samdach Sothearos Blvd, Chey Chumneas, Daun Penh, Phnom Penh',
       province: 'Phnom Penh'
     },
     image: 'https://drive.google.com/file/d/1Y7wwOqlLg1G1O7Y1CSwEQeVb3CmHwCcn/view?usp=sharing',
-    tags: ['Mekong Sunset Cruise', 'Waterfront Promenade', 'Four Rivers Junction', 'City Skyline'],
-    transportTips: '1-hour sunset boat cruises start at $5–$8 per seat at Kantha Bopha port.',
-    entryFee: 'Free promenade ($5–$8 river cruise)'
+    tags: ['Royal Palace', 'Silver Pagoda', 'Emerald Buddha', 'Khmer Spires', 'Throne Hall'],
+    transportTips: 'Conveniently located along Samdach Sothearos Blvd, 5-min walk from Sisowath Quay Riverside or $1.50 tuk-tuk.',
+    entryFee: '$10 entrance ticket'
   },
 
   // KAMPOT
