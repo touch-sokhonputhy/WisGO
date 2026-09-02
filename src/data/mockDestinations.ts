@@ -411,7 +411,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Choam Khsant District, Preah Vihear',
       province: 'Preah Vihear'
     },
-    image: 'https://drive.google.com/file/d/161bqu-a3siz3Sis27hpqxXlfl6TNA4jQ/view?usp=sharing',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
     tags: ['UNESCO World Heritage', 'Cliffside Views', 'Dângrêk Mountain', 'Khmer Masterpiece'],
     transportTips: '4WD mountain pickup or 1.5-hour drive from Siem Reap ($10 4WD ride to summit).',
     entryFee: '$10 ticket + local mountain transfer'
@@ -455,7 +455,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Tatai River Bridge, Koh Kong',
       province: 'Koh Kong'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/161bqu-a3siz3Sis27hpqxXlfl6TNA4jQ/view?usp=sharing',
     tags: ['Cardamom Mountains', 'Tatai River Waterfall', 'Floating Eco-Lodges', 'Jungle Kayaking'],
     transportTips: '20-min boat trip from Tatai Bridge. Easily reached via Koh Kong highway bus.',
     entryFee: '$2 local boat transfer to waterfall'
