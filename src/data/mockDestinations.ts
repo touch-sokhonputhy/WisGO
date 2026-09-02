@@ -433,7 +433,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Kampi Pool, Sambour District, Kratie',
       province: 'Kratie'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/16Oar280b0Uk8NkvuLSDYU3wr_mtMxExz/view?usp=sharing',
     tags: ['Mekong Dolphins', 'Irrawaddy Dolphins', 'Koh Trong Cycling', 'Eco-Tourism'],
     transportTips: '15km north of Kratie town along the Mekong river road. Boat hire $9/person.',
     entryFee: '$9 dolphin observation boat'
@@ -455,7 +455,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Tatai River Bridge, Koh Kong',
       province: 'Koh Kong'
     },
-    image: 'https://drive.google.com/file/d/16Oar280b0Uk8NkvuLSDYU3wr_mtMxExz/view?usp=sharing',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
     tags: ['Cardamom Mountains', 'Tatai River Waterfall', 'Floating Eco-Lodges', 'Jungle Kayaking'],
     transportTips: '20-min boat trip from Tatai Bridge. Easily reached via Koh Kong highway bus.',
     entryFee: '$2 local boat transfer to waterfall'
