@@ -106,23 +106,23 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
   // PHNOM PENH
   {
     id: 'kh-pp-1',
-    title: 'Phnom Penh Royal Palace & Silver Pagoda',
-    khmerName: 'ព្រះបរមរាជវាំង ភ្នំពេញ',
+    title: 'National Museum of Cambodia (Phnom Penh)',
+    khmerName: 'សារមន្ទីរជាតិកម្ពុជា',
     province: 'Phnom Penh',
     category: 'Temple & Heritage',
-    rating: 4.7,
-    reviewCount: 14200,
-    description: 'Grand royal residence featuring classic Khmer spires and the Silver Pagoda paved with over 5,000 pure silver floor tiles and emerald Buddha statues.',
+    rating: 4.8,
+    reviewCount: 16500,
+    description: 'Cambodia’s premier historical and archaeological museum, housed in a stunning traditional terracotta pavilion surrounding a peaceful courtyard. Houses the world’s greatest collection of ancient Khmer sculptures, Angkorian bronze masterpieces, and royal artifacts.',
     location: {
-      lat: 11.5625,
-      lng: 104.9312,
-      address: 'Samdach Sothearos Blvd, Phnom Penh',
+      lat: 11.5658,
+      lng: 104.9288,
+      address: 'Preah Ang Eng St. (13), Chey Chumneas, Daun Penh, Phnom Penh',
       province: 'Phnom Penh'
     },
-    image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1000&q=80',
-    tags: ['Royal Residence', 'Silver Floor Tiles', 'Emerald Buddha', 'Khmer Royalty'],
-    transportTips: '5-min tuk-tuk ride from Riverside Sisowath Quay.',
-    entryFee: '$10 entrance ticket'
+    image: 'https://drive.google.com/file/d/1W5xhMR3HysqR1V2ndPnV2e7TJGFlOgmK/view?usp=sharing',
+    tags: ['National Museum', 'Khmer Sculptures', 'Angkorian Bronzes', 'Terracotta Courtyard', 'Cultural Heritage'],
+    transportTips: 'Located just north of the Royal Palace along Street 13. Short 3-min walk or $1.50 PassApp tuk-tuk.',
+    entryFee: '$10 for foreign visitors ($5 for ages 10–17)'
   },
   {
     id: 'kh-pp-4',
