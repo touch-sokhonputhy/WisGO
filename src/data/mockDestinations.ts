@@ -367,7 +367,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Koh Touch & Long Set Beach, Koh Rong Island',
       province: 'Koh Rong & Sihanoukville'
     },
-    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
     tags: ['Koh Rong', 'Long Set Beach 4K', 'White Sand Beaches', 'Bioluminescent Plankton', 'Island Paradise'],
     transportTips: '45-min speed ferry from Sihanoukville Autonomous Port ($25 roundtrip).',
     entryFee: 'Free island access ($25 roundtrip ferry ticket)'
@@ -389,7 +389,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Pech Chreada District, Mondulkiri',
       province: 'Mondulkiri'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
     tags: ['Highland Pines', 'Bousra Waterfall', 'Ethical Elephants', 'Bunong Culture'],
     transportTips: 'Book a minivan from Phnom Penh (approx 5 hours) or local motorbike in Sen Monorom.',
     entryFee: '$2.50 entrance for Bousra Waterfall'
