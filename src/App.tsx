@@ -13,7 +13,7 @@ import { Pricing } from './components/Pricing';
 import { Footer } from './components/Footer';
 import { Destination } from './types';
 import { CAMBODIA_DESTINATIONS } from './data/mockDestinations';
-import { getDirectImageUrl, FALLBACK_BACKUP_IMAGE } from './lib/imageUtils';
+import { getDirectImageUrl, getDriveThumbnailUrl, FALLBACK_BACKUP_IMAGE } from './lib/imageUtils';
 import { MapPin, Compass, Sparkles, Heart, Search, Filter, Route } from 'lucide-react';
 
 function MainApp() {
@@ -205,8 +205,12 @@ function MainApp() {
                             referrerPolicy="no-referrer"
                             onError={(e) => {
                               const target = e.currentTarget;
-                              if (!target.dataset.fallback) {
-                                target.dataset.fallback = 'true';
+                              const fallbackCount = parseInt(target.dataset.fallbackCount || '0', 10);
+                              if (fallbackCount === 0 && (item.image.includes('drive.google.com') || item.image.includes('file/d/'))) {
+                                target.dataset.fallbackCount = '1';
+                                target.src = getDriveThumbnailUrl(item.image);
+                              } else if (fallbackCount < 2) {
+                                target.dataset.fallbackCount = '2';
                                 target.src = FALLBACK_BACKUP_IMAGE;
                               }
                             }}
