@@ -499,7 +499,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Krakor District, Pursat Province',
       province: 'Pursat'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1K9Sppo_-Oe_T7nL3_JTRTRTP8cGUCOOu/view?usp=sharing',
     tags: ['Floating City', 'Tonle Sap Community', 'Local River Life', 'Cultural Exploration'],
     transportTips: '35km from Pursat town. Hire a wooden motorboat at Krakor pier ($12-$15).',
     entryFee: '$10 boat tour ticket'
