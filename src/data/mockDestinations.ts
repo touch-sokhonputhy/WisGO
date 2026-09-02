@@ -367,7 +367,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Koh Touch & Long Set Beach, Koh Rong Island',
       province: 'Koh Rong & Sihanoukville'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
     tags: ['Koh Rong', 'Long Set Beach 4K', 'White Sand Beaches', 'Bioluminescent Plankton', 'Island Paradise'],
     transportTips: '45-min speed ferry from Sihanoukville Autonomous Port ($25 roundtrip).',
     entryFee: 'Free island access ($25 roundtrip ferry ticket)'
@@ -389,7 +389,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Pech Chreada District, Mondulkiri',
       province: 'Mondulkiri'
     },
-    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=80',
     tags: ['Highland Pines', 'Bousra Waterfall', 'Ethical Elephants', 'Bunong Culture'],
     transportTips: 'Book a minivan from Phnom Penh (approx 5 hours) or local motorbike in Sen Monorom.',
     entryFee: '$2.50 entrance for Bousra Waterfall'
@@ -433,7 +433,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Kampi Pool, Sambour District, Kratie',
       province: 'Kratie'
     },
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
     tags: ['Mekong Dolphins', 'Irrawaddy Dolphins', 'Koh Trong Cycling', 'Eco-Tourism'],
     transportTips: '15km north of Kratie town along the Mekong river road. Boat hire $9/person.',
     entryFee: '$9 dolphin observation boat'
