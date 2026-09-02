@@ -9,6 +9,8 @@ import { AuthModal } from './components/AuthModal';
 import { MapAndPlanner } from './components/MapAndPlanner';
 import { AIAssistant } from './components/AIAssistant';
 import { WeatherWidget } from './components/WeatherWidget';
+import { Pricing } from './components/Pricing';
+import { Footer } from './components/Footer';
 import { Destination } from './types';
 import { CAMBODIA_DESTINATIONS } from './data/mockDestinations';
 import { getDirectImageUrl, FALLBACK_BACKUP_IMAGE } from './lib/imageUtils';
@@ -16,7 +18,7 @@ import { MapPin, Compass, Sparkles, Heart, Search, Filter, Route } from 'lucide-
 
 function MainApp() {
   const { language, t, tProvince, tCategory } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'explore' | 'planner' | 'assistant' | 'favorites'>('explore');
+  const [activeTab, setActiveTab] = useState<'explore' | 'planner' | 'assistant' | 'favorites' | 'pricing'>('explore');
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedProvince, setSelectedProvince] = useState<string>('All');
@@ -391,22 +393,39 @@ function MainApp() {
               )}
             </motion.div>
           )}
+          {/* PRICING TAB */}
+          {activeTab === 'pricing' && (
+            <motion.div
+              key="pricing"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              <Pricing
+                onNavigateTab={(tab) => {
+                  setActiveTab(tab);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onOpenAuthModal={() => setIsAuthModalOpen(true)}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 mt-12">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} {t('footer.copyright', 'WisGO — Authentic Cambodian Youth Local Travel Platform.')}</p>
-          <div className="flex items-center gap-4 text-slate-500">
-            <span>Google Maps API</span>
-            <span>•</span>
-            <span>Gemini AI Assistant</span>
-            <span>•</span>
-            <span>Firebase Auth & Firestore</span>
-          </div>
-        </div>
-      </footer>
+      <Footer
+        onSelectProvince={(province) => {
+          setSelectedProvince(province);
+          setActiveTab('explore');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
 
       {/* Modals */}
       <PreferencesModal

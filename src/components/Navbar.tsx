@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, Sparkles, User as UserIcon, LogOut, Settings, Globe, DollarSign, MapPin, Heart } from 'lucide-react';
+import { Compass, Sparkles, User as UserIcon, LogOut, Settings, Globe, DollarSign, MapPin, Heart, Tag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
@@ -8,8 +8,8 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 interface NavbarProps {
   onOpenPreferences: () => void;
   onOpenAuthModal: () => void;
-  activeTab: 'explore' | 'planner' | 'assistant' | 'favorites';
-  setActiveTab: (tab: 'explore' | 'planner' | 'assistant' | 'favorites') => void;
+  activeTab: 'explore' | 'planner' | 'assistant' | 'favorites' | 'pricing';
+  setActiveTab: (tab: 'explore' | 'planner' | 'assistant' | 'favorites' | 'pricing') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -91,6 +91,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Heart className="w-4 h-4" />
             <span>{t('nav.saved', 'Saved')}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('pricing')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+              activeTab === 'pricing'
+                ? 'bg-[#0B7A5C] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <Tag className="w-4 h-4" />
+            <span>{t('nav.pricing', 'Pricing')}</span>
           </button>
         </nav>
 
