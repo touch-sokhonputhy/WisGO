@@ -367,7 +367,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Koh Touch & Long Set Beach, Koh Rong Island',
       province: 'Koh Rong & Sihanoukville'
     },
-    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
+    image: 'https://drive.google.com/file/d/1TDOgZawNhI-WbmibsKJnUnBeM_2uHtiD/view?usp=sharing',
     tags: ['Koh Rong', 'Long Set Beach 4K', 'White Sand Beaches', 'Bioluminescent Plankton', 'Island Paradise'],
     transportTips: '45-min speed ferry from Sihanoukville Autonomous Port ($25 roundtrip).',
     entryFee: 'Free island access ($25 roundtrip ferry ticket)'
