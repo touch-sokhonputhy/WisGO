@@ -367,7 +367,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Koh Touch & Long Set Beach, Koh Rong Island',
       province: 'Koh Rong & Sihanoukville'
     },
-    image: 'https://drive.google.com/file/d/1TDOgZawNhI-WbmibsKJnUnBeM_2uHtiD/view?usp=sharing',
+    image: 'https://drive.google.com/file/d/1gDVQ3TnKgcmpzGgpseTR4xsppl8Xliqh/view?usp=sharing',
     tags: ['Koh Rong', 'Long Set Beach 4K', 'White Sand Beaches', 'Bioluminescent Plankton', 'Island Paradise'],
     transportTips: '45-min speed ferry from Sihanoukville Autonomous Port ($25 roundtrip).',
     entryFee: 'Free island access ($25 roundtrip ferry ticket)'
@@ -389,7 +389,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Pech Chreada District, Mondulkiri',
       province: 'Mondulkiri'
     },
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1TDOgZawNhI-WbmibsKJnUnBeM_2uHtiD/view?usp=sharing',
     tags: ['Highland Pines', 'Bousra Waterfall', 'Ethical Elephants', 'Bunong Culture'],
     transportTips: 'Book a minivan from Phnom Penh (approx 5 hours) or local motorbike in Sen Monorom.',
     entryFee: '$2.50 entrance for Bousra Waterfall'
@@ -411,7 +411,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Choam Khsant District, Preah Vihear',
       province: 'Preah Vihear'
     },
-    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1H9tNOWdzvsuq-W5y_8uU6mSMZO_WSfRa/view?usp=sharing',
     tags: ['UNESCO World Heritage', 'Cliffside Views', 'Dângrêk Mountain', 'Khmer Masterpiece'],
     transportTips: '4WD mountain pickup or 1.5-hour drive from Siem Reap ($10 4WD ride to summit).',
     entryFee: '$10 ticket + local mountain transfer'
@@ -433,7 +433,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Kampi Pool, Sambour District, Kratie',
       province: 'Kratie'
     },
-    image: 'https://drive.google.com/file/d/16Oar280b0Uk8NkvuLSDYU3wr_mtMxExz/view?usp=sharing',
+    image: 'https://drive.google.com/file/d/1lYkhcIzAf3VMwGmxkpXtvfQGUNm_YLFN/view?usp=sharing',
     tags: ['Mekong Dolphins', 'Irrawaddy Dolphins', 'Koh Trong Cycling', 'Eco-Tourism'],
     transportTips: '15km north of Kratie town along the Mekong river road. Boat hire $9/person.',
     entryFee: '$9 dolphin observation boat'
@@ -477,7 +477,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Banlung Town, Ratanakiri',
       province: 'Ratanakiri'
     },
-    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/16Oar280b0Uk8NkvuLSDYU3wr_mtMxExz/view?usp=sharing',
     tags: ['Volcanic Crater Lake', 'Emerald Swim', 'Indigenous Tribal Culture', 'Sacred Forest'],
     transportTips: '5km east of Banlung center. Easy 10-min tuk-tuk or scooter drive.',
     entryFee: '$2 entry fee'
@@ -499,7 +499,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Krakor District, Pursat Province',
       province: 'Pursat'
     },
-    image: 'https://drive.google.com/file/d/1uiREUuD7F0pN9aWVzDpaYFy4dOnqnGU9/view?usp=sharing',
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1000&q=80',
     tags: ['Floating City', 'Tonle Sap Community', 'Local River Life', 'Cultural Exploration'],
     transportTips: '35km from Pursat town. Hire a wooden motorboat at Krakor pier ($12-$15).',
     entryFee: '$10 boat tour ticket'
@@ -521,7 +521,7 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
       address: 'Ponhea Lueu District, Kandal',
       province: 'Kandal'
     },
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://drive.google.com/file/d/1uiREUuD7F0pN9aWVzDpaYFy4dOnqnGU9/view?usp=sharing',
     tags: ['Former Royal Capital', 'King Stupas', 'Hilltop Panorama', 'Khmer Pilgrimage'],
     transportTips: '40km north of Phnom Penh. 1-hour drive via tuk-tuk or taxi ($20 roundtrip).',
     entryFee: 'Free ($1 donation for staircase upkeep)'
