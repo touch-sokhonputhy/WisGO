@@ -354,23 +354,23 @@ export const CAMBODIA_DESTINATIONS: Destination[] = [
   // KOH RONG & SIHANOUKVILLE
   {
     id: 'kh-kr-1',
-    title: 'Koh Rong Sanloem Bioluminescent Bay & Clear Beaches',
-    khmerName: 'កោះរ៉ុងសន្លឹម',
+    title: 'Koh Rong',
+    khmerName: 'កោះរ៉ុង',
     province: 'Koh Rong & Sihanoukville',
     category: 'Beach & Island',
     rating: 4.9,
-    reviewCount: 11200,
-    description: 'Pristine tropical island with white flour sand beaches, crystal turquoise waters, and night swimming with glowing blue bioluminescent plankton.',
+    reviewCount: 14800,
+    description: 'Cambodia’s premier island paradise boasting pristine white powdery beaches (Long Set / 4K Beach & Sok San), crystal-clear turquoise waters, vibrant coral reefs, and night swimming with glowing bioluminescent plankton.',
     location: {
-      lat: 10.5892,
-      lng: 103.3088,
-      address: 'Saracen Bay, Koh Rong Sanloem Island',
+      lat: 10.7256,
+      lng: 103.2372,
+      address: 'Koh Touch & Long Set Beach, Koh Rong Island',
       province: 'Koh Rong & Sihanoukville'
     },
-    image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1000&q=80',
-    tags: ['Bioluminescent Plankton', 'White Sand Beach', 'Island Paradise', 'Snorkeling'],
+    image: 'https://drive.google.com/file/d/1YueRP7o3ikfqD0qDie_A1vV9RqDhd6Hd/view?usp=sharing',
+    tags: ['Koh Rong', 'Long Set Beach 4K', 'White Sand Beaches', 'Bioluminescent Plankton', 'Island Paradise'],
     transportTips: '45-min speed ferry from Sihanoukville Autonomous Port ($25 roundtrip).',
-    entryFee: 'Free island access'
+    entryFee: 'Free island access ($25 roundtrip ferry ticket)'
   },
 
   // MONDULKIRI
