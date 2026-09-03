@@ -30,12 +30,12 @@ export const LanguageSwitcher: React.FC<{ compact?: boolean }> = ({ compact = fa
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] rounded-xl bg-[#F8FCFA] hover:bg-[#DFF7ED] border border-slate-200 hover:border-[#0B7A5C] text-xs font-bold text-slate-700 hover:text-[#0B7A5C] transition-all cursor-pointer shadow-2xs shrink-0"
+        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] rounded-xl bg-[#F8FCFA] hover:bg-[#DFF7ED] border border-slate-200 hover:border-[#0B7A5C] text-xs font-bold text-slate-700 hover:text-[#0B7A5C] transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap"
         title="Switch Language / ជ្រើសរើសភាសា"
       >
-        <span className="text-sm">{currentLang.flag}</span>
-        <span className="font-semibold">{compact ? currentLang.code.toUpperCase() : currentLang.localName}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-sm shrink-0">{currentLang.flag}</span>
+        <span className="font-semibold whitespace-nowrap">{compact ? currentLang.code.toUpperCase() : currentLang.localName}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}

@@ -53,26 +53,26 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/80 text-slate-800 sticky top-0 z-50 shadow-2xs transition-all duration-200">
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 lg:gap-4 flex-nowrap min-w-0">
         
         {/* Brand Logo - WisGO Cambodia */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap">
           <button 
             type="button"
             onClick={() => {
               setActiveTab('explore');
               smoothScrollTo('main-content', 75);
             }}
-            className="flex items-center gap-2 sm:gap-2.5 min-h-[40px] text-lg sm:text-xl font-black tracking-tight text-[#1E293B] hover:opacity-90 active:scale-98 transition-all cursor-pointer group rounded-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C]"
+            className="flex items-center gap-2 sm:gap-2.5 min-h-[40px] text-lg sm:text-xl font-black tracking-tight text-[#1E293B] hover:opacity-90 active:scale-98 transition-all cursor-pointer group rounded-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] shrink-0 whitespace-nowrap"
             aria-label="WisGO Cambodia Home"
           >
-            <div className="bg-[#F0FDF8] border-1.5 border-[#0B7A5C]/40 group-hover:border-[#0B7A5C] p-1.5 rounded-xl shadow-2xs flex items-center justify-center transition-all group-hover:scale-105">
+            <div className="bg-[#F0FDF8] border-1.5 border-[#0B7A5C]/40 group-hover:border-[#0B7A5C] p-1.5 rounded-xl shadow-2xs flex items-center justify-center transition-all group-hover:scale-105 shrink-0">
               <WisgoLogo className="w-5 h-5 sm:w-5.5 sm:h-5.5" strokeColor="#0B7A5C" />
             </div>
-            <span className="font-extrabold tracking-tight">Wis<span className="text-[#0B7A5C]">GO</span></span>
+            <span className="font-extrabold tracking-tight whitespace-nowrap">Wis<span className="text-[#0B7A5C]">GO</span></span>
           </button>
           
-          <span className="hidden xl:inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#DFF7ED] text-[#0B7A5C] border border-[#21C87A]/30 select-none">
+          <span className="hidden 2xl:inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#DFF7ED] text-[#0B7A5C] border border-[#21C87A]/30 select-none whitespace-nowrap shrink-0">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0B7A5C] animate-pulse" />
             <span>🇰🇭</span>
             <span>{t('nav.tagline', 'Authentic Khmer Tourism')}</span>
@@ -82,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop & Tablet Navigation Tabs */}
         <nav 
           aria-label="Main navigation" 
-          className="hidden md:flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-inner"
+          className="hidden md:flex items-center gap-0.5 lg:gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shadow-inner flex-nowrap shrink-0 whitespace-nowrap"
         >
           <button
             type="button"
@@ -90,14 +90,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('explore');
               smoothScrollTo('explore-section', 75);
             }}
-            className={`px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'explore'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <Compass className="w-3.5 h-3.5" />
-            <span>{t('nav.explore', 'Explore')}</span>
+            <Compass className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">{t('nav.explore', 'Explore')}</span>
           </button>
 
           <button
@@ -106,14 +106,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('planner');
               smoothScrollTo('map-section', 75);
             }}
-            className={`px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'planner'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <MapPin className="w-3.5 h-3.5" />
-            <span>{t('nav.map_planner', 'Map & Planner')}</span>
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">{t('nav.map_planner', 'Map & Planner')}</span>
           </button>
 
           <button
@@ -122,15 +122,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('assistant');
               smoothScrollTo('main-content', 75);
             }}
-            className={`px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer relative focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none relative focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'assistant'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'assistant' ? 'text-emerald-300' : 'text-[#0B7A5C]'}`} />
-            <span>{t('nav.ai_guide', 'AI Guide')}</span>
-            <span className="hidden lg:inline-block text-[9px] font-black uppercase px-1 py-0.2 rounded bg-amber-400/30 text-amber-900 leading-tight">
+            <Sparkles className={`w-3.5 h-3.5 shrink-0 ${activeTab === 'assistant' ? 'text-emerald-300' : 'text-[#0B7A5C]'}`} />
+            <span className="whitespace-nowrap">{t('nav.ai_guide', 'AI Guide')}</span>
+            <span className="hidden xl:inline-block text-[9px] font-black uppercase px-1 py-0.2 rounded bg-amber-400/30 text-amber-900 leading-tight">
               AI
             </span>
           </button>
@@ -141,14 +141,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('trips');
               smoothScrollTo('main-content', 75);
             }}
-            className={`px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'trips'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>{t('nav.trips', 'My Trips')}</span>
+            <Bookmark className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">{t('nav.trips', 'My Trips')}</span>
           </button>
 
           <button
@@ -157,14 +157,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('favorites');
               smoothScrollTo('main-content', 75);
             }}
-            className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'favorites'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <Heart className="w-3.5 h-3.5" />
-            <span>{t('nav.saved', 'Saved')}</span>
+            <Heart className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">{t('nav.saved', 'Saved')}</span>
           </button>
 
           <button
@@ -173,19 +173,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('pricing');
               smoothScrollTo('main-content', 75);
             }}
-            className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+            className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'pricing'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 active:scale-98'
             }`}
           >
-            <Tag className="w-3.5 h-3.5" />
-            <span>{t('nav.pricing', 'Pricing')}</span>
+            <Tag className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">{t('nav.pricing', 'Pricing')}</span>
           </button>
         </nav>
 
         {/* User / Settings / Language Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-nowrap">
           
           {/* Dedicated Language Switcher Component */}
           <LanguageSwitcher compact={false} />
