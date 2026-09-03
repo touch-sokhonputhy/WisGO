@@ -166,19 +166,20 @@ function MainApp() {
       
       {/* Navbar or Embed Banner */}
       {isEmbedMode ? (
-        <header className="bg-[#0B7A5C] text-white px-4 py-2.5 flex items-center justify-between shadow-xs sticky top-0 z-40">
+        <header className="bg-[#0B7A5C]/95 backdrop-blur-md text-white px-4 py-2.5 flex items-center justify-between border-b border-[#086048] shadow-xs sticky top-0 z-50 transition-all">
           <div className="flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#21C87A] animate-pulse" />
             <span className="font-extrabold text-sm tracking-tight">🇰🇭 WisGO Cambodia</span>
-            <span className="text-xs text-white/80 hidden sm:inline">• Travel Planner & Itinerary</span>
+            <span className="text-xs text-white/80 hidden sm:inline">• Youth-Led Travel Planner</span>
           </div>
           <a
             href={typeof window !== 'undefined' ? window.location.origin : 'https://wis-go.vercel.app/'}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-bold bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg transition-colors inline-flex items-center gap-1"
+            className="text-xs font-bold bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl transition-all inline-flex items-center gap-1.5 shadow-2xs active:scale-95"
           >
             <span>Open in WisGO</span>
-            <span>&rarr;</span>
+            <span aria-hidden="true">&rarr;</span>
           </a>
         </header>
       ) : (
