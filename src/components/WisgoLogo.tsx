@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getDirectImageUrl } from '../lib/imageUtils';
 
 interface WisgoLogoProps {
   className?: string;
@@ -6,19 +7,30 @@ interface WisgoLogoProps {
   alt?: string;
   strokeColor?: string;
   fillColor?: string;
+  src?: string;
+  style?: React.CSSProperties;
 }
 
-export const WISGO_LOGO_URL = 'https://wsrv.nl/?url=https://drive.google.com/uc?id=1zVNzI7UBXACdZgi2QdJZ5JNXcvhHZsI1&export=download';
-export const WISGO_LOGO_BACKUP_URL = 'https://drive.google.com/thumbnail?id=1zVNzI7UBXACdZgi2QdJZ5JNXcvhHZsI1&sz=w800';
+export const WISGO_LOGO_DRIVE_SOURCE = 'http://file/d/19cTy3rDAUETWLr9EAW7v3U1LYIcb8gse/view?usp=sharing';
+export const WISGO_LOGO_URL = 'https://lh3.googleusercontent.com/d/19cTy3rDAUETWLr9EAW7v3U1LYIcb8gse';
+export const WISGO_LOGO_BACKUP_URL = 'https://drive.google.com/thumbnail?id=19cTy3rDAUETWLr9EAW7v3U1LYIcb8gse&sz=w800';
 
 export const WisgoLogo: React.FC<WisgoLogoProps> = ({
   className = 'w-6 h-6',
   size,
   alt = 'WisGO Logo',
   strokeColor = '#0B7A5C',
+  src,
+  style,
 }) => {
-  const [imgSrc, setImgSrc] = useState<string>(WISGO_LOGO_URL);
+  const resolvedSrc = src ? getDirectImageUrl(src) : WISGO_LOGO_URL;
+  const [imgSrc, setImgSrc] = useState<string>(resolvedSrc);
   const [hasError, setHasError] = useState<boolean>(false);
+
+  useEffect(() => {
+    setImgSrc(resolvedSrc);
+    setHasError(false);
+  }, [resolvedSrc]);
 
   const handleError = () => {
     if (imgSrc === WISGO_LOGO_URL) {
@@ -33,7 +45,7 @@ export const WisgoLogo: React.FC<WisgoLogoProps> = ({
       <svg
         viewBox="0 0 200 200"
         className={className}
-        style={size ? { width: size, height: size } : undefined}
+        style={size ? { width: size, height: size, ...style } : style}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -51,7 +63,7 @@ export const WisgoLogo: React.FC<WisgoLogoProps> = ({
       onError={handleError}
       referrerPolicy="no-referrer"
       className={`object-contain select-none shrink-0 ${className}`}
-      style={size ? { width: size, height: size } : undefined}
+      style={size ? { width: size, height: size, ...style } : style}
       loading="eager"
     />
   );

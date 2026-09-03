@@ -20,7 +20,7 @@ export function getDirectImageUrl(url: string | undefined): string {
 
   if (driveMatch && driveMatch[1]) {
     const fileId = driveMatch[1];
-    return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}&export=download`;
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
   }
 
   return url;
@@ -35,7 +35,7 @@ export function getDriveThumbnailUrl(url: string | undefined): string {
 
   if (driveMatch && driveMatch[1]) {
     const fileId = driveMatch[1];
-    return `https://lh3.googleusercontent.com/d/${fileId}`;
+    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
   }
   return url;
 }

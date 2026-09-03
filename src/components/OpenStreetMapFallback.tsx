@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Destination } from '../types';
-import { getDirectImageUrl } from '../lib/imageUtils';
+import { getDirectImageUrl, getDriveThumbnailUrl, FALLBACK_BACKUP_IMAGE } from '../lib/imageUtils';
 import { Compass, Filter, Heart, Sparkles, Navigation, Layers, Info, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -296,9 +296,21 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
           {selectedDestination && (
             <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-slate-200 p-4 rounded-2xl shadow-xl z-[1000] max-w-lg mx-auto flex gap-4 items-center animate-in slide-in-from-bottom-4 duration-200">
               <img
-                src={selectedDestination.image}
+                src={getDirectImageUrl(selectedDestination.image)}
                 alt={selectedDestination.title}
-                className="w-20 h-20 rounded-xl object-cover shrink-0"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const fallbackCount = parseInt(target.dataset.fallbackCount || '0', 10);
+                  if (fallbackCount === 0 && (selectedDestination.image.includes('drive.google.com') || selectedDestination.image.includes('file/d/'))) {
+                    target.dataset.fallbackCount = '1';
+                    target.src = getDriveThumbnailUrl(selectedDestination.image);
+                  } else if (fallbackCount < 2) {
+                    target.dataset.fallbackCount = '2';
+                    target.src = FALLBACK_BACKUP_IMAGE;
+                  }
+                }}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shrink-0 border border-slate-200/80 shadow-xs bg-slate-100 transition-all duration-300"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
@@ -323,9 +335,9 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                 <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() => onToggleSaveSpot(selectedDestination)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all duration-200 cursor-pointer active:scale-90 hover:scale-[1.02] ${
                       savedSpotIds.includes(selectedDestination.id)
-                        ? 'bg-rose-500 text-white'
+                        ? 'bg-rose-500 text-white shadow-xs'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
@@ -394,7 +406,18 @@ export const OpenStreetMapFallback: React.FC<OpenStreetMapFallbackProps> = ({
                     src={getDirectImageUrl(dest.image)}
                     alt={destTitle}
                     referrerPolicy="no-referrer"
-                    className="w-14 h-14 rounded-xl object-cover shrink-0"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallbackCount = parseInt(target.dataset.fallbackCount || '0', 10);
+                      if (fallbackCount === 0 && (dest.image.includes('drive.google.com') || dest.image.includes('file/d/'))) {
+                        target.dataset.fallbackCount = '1';
+                        target.src = getDriveThumbnailUrl(dest.image);
+                      } else if (fallbackCount < 2) {
+                        target.dataset.fallbackCount = '2';
+                        target.src = FALLBACK_BACKUP_IMAGE;
+                      }
+                    }}
+                    className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-slate-200/80 shadow-2xs bg-slate-100 transition-all duration-300"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-[#1E293B] truncate">{destTitle}</p>

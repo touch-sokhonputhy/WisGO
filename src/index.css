@@ -14,6 +14,10 @@
   --color-border-light: #E5E7EB;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--color-bg-light, #F8FCFA);
   color: var(--color-text-dark, #1E293B);

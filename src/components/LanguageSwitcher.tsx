@@ -30,7 +30,7 @@ export const LanguageSwitcher: React.FC<{ compact?: boolean }> = ({ compact = fa
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FCFA] hover:bg-[#DFF7ED] border border-slate-200 hover:border-[#0B7A5C] text-xs font-bold text-slate-700 hover:text-[#0B7A5C] transition-all cursor-pointer shadow-2xs"
+        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] rounded-xl bg-[#F8FCFA] hover:bg-[#DFF7ED] border border-slate-200 hover:border-[#0B7A5C] text-xs font-bold text-slate-700 hover:text-[#0B7A5C] transition-all cursor-pointer shadow-2xs shrink-0"
         title="Switch Language / ជ្រើសរើសភាសា"
       >
         <span className="text-sm">{currentLang.flag}</span>

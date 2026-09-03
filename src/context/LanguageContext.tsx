@@ -43,7 +43,9 @@ export const CATEGORY_TRANSLATIONS: Record<string, { en: string; km: string }> =
 const translations: Record<Language, Record<string, string>> = {
   en: {
     // Navbar & Common
-    'nav.discover': 'Discover',
+    'nav.discover': 'Explore',
+    'nav.explore': 'Explore',
+    'nav.view_map': 'View Map',
     'nav.map_planner': 'Map & Planner',
     'nav.ai_guide': 'AI Guide',
     'nav.saved': 'Saved',
@@ -175,6 +177,8 @@ const translations: Record<Language, Record<string, string>> = {
   km: {
     // Navbar & Common
     'nav.discover': 'ស្វែងរក',
+    'nav.explore': 'រុករក',
+    'nav.view_map': 'មើលផែនទី',
     'nav.map_planner': 'ផែនទី & គម្រោង',
     'nav.ai_guide': 'មគ្គុទ្ទេសក៍ AI',
     'nav.saved': 'បានរក្សាទុក',

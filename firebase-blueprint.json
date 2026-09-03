@@ -31,15 +31,24 @@
     },
     "Itinerary": {
       "title": "Trip Itinerary",
-      "description": "User created or AI generated Cambodia trip plan",
+      "description": "User created or AI generated actionable Cambodia trip plan",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
         "title": { "type": "string" },
+        "destination": { "type": "string" },
         "durationDays": { "type": "number" },
+        "startDate": { "type": "string" },
+        "budgetTier": { "type": "string" },
+        "travelersCount": { "type": "number" },
+        "totalCost": { "type": "string" },
         "province": { "type": "string" },
-        "items": { "type": "array" }
+        "days": { "type": "array" },
+        "items": { "type": "array" },
+        "isPublic": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
       },
       "required": ["id", "userId", "title"]
     },

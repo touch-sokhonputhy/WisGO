@@ -3,10 +3,11 @@ import { Globe, ExternalLink, Mail, MapPin, Sparkles, Heart, Compass, ShieldChec
 import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
 import { FacebookIcon, TikTokIcon, YoutubeIcon } from './SocialIcons';
+import { smoothScrollTo } from '../utils/scrollUtils';
 
 interface FooterProps {
   onSelectProvince?: (province: string) => void;
-  onNavigateTab?: (tab: 'explore' | 'planner' | 'assistant' | 'favorites' | 'pricing') => void;
+  onNavigateTab?: (tab: 'explore' | 'planner' | 'assistant' | 'trips' | 'favorites' | 'pricing') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab }) => {
@@ -234,7 +235,22 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
             <ul className="space-y-2 text-slate-600">
               <li>
                 <button 
-                  onClick={() => onNavigateTab?.('planner')} 
+                  onClick={() => {
+                    onNavigateTab?.('explore');
+                    smoothScrollTo('explore-section', 75);
+                  }} 
+                  className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Compass className="w-3.5 h-3.5 text-[#0B7A5C]" />
+                  <span>{language === 'km' ? 'រុករកទីតាំងកម្សាន្ត' : 'Explore Destinations'}</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => {
+                    onNavigateTab?.('planner');
+                    smoothScrollTo('map-section', 75);
+                  }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <MapPin className="w-3.5 h-3.5 text-[#0B7A5C]" />
@@ -243,7 +259,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
               </li>
               <li>
                 <button 
-                  onClick={() => onNavigateTab?.('assistant')} 
+                  onClick={() => {
+                    onNavigateTab?.('assistant');
+                    smoothScrollTo('main-content', 75);
+                  }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-[#21C87A]" />
@@ -252,7 +271,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
               </li>
               <li>
                 <button 
-                  onClick={() => onNavigateTab?.('favorites')} 
+                  onClick={() => {
+                    onNavigateTab?.('favorites');
+                    smoothScrollTo('main-content', 75);
+                  }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <Heart className="w-3.5 h-3.5 text-rose-500" />
@@ -261,7 +283,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
               </li>
               <li>
                 <button 
-                  onClick={() => onNavigateTab?.('pricing')} 
+                  onClick={() => {
+                    onNavigateTab?.('pricing');
+                    smoothScrollTo('main-content', 75);
+                  }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <Tag className="w-3.5 h-3.5 text-[#0B7A5C]" />

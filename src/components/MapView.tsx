@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import { Destination } from '../types';
-import { getDirectImageUrl } from '../lib/imageUtils';
+import { getDirectImageUrl, getDriveThumbnailUrl, FALLBACK_BACKUP_IMAGE } from '../lib/imageUtils';
 import { Star, Heart, Sparkles, Filter, Compass } from 'lucide-react';
 import { OpenStreetMapFallback } from './OpenStreetMapFallback';
 import { useLanguage } from '../context/LanguageContext';
@@ -182,7 +182,18 @@ export const MapView: React.FC<MapViewProps> = ({
                         src={getDirectImageUrl(selectedDestination.image)}
                         alt={selectedDestination.title}
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          const fallbackCount = parseInt(target.dataset.fallbackCount || '0', 10);
+                          if (fallbackCount === 0 && (selectedDestination.image.includes('drive.google.com') || selectedDestination.image.includes('file/d/'))) {
+                            target.dataset.fallbackCount = '1';
+                            target.src = getDriveThumbnailUrl(selectedDestination.image);
+                          } else if (fallbackCount < 2) {
+                            target.dataset.fallbackCount = '2';
+                            target.src = FALLBACK_BACKUP_IMAGE;
+                          }
+                        }}
+                        className="w-full h-full object-cover transition-all duration-300"
                       />
                       <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-[10px] font-bold text-[#0B7A5C]">
                         {tProvince(selectedDestination.province)}
@@ -226,9 +237,9 @@ export const MapView: React.FC<MapViewProps> = ({
                     <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-100">
                       <button
                         onClick={() => onToggleSaveSpot(selectedDestination)}
-                        className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all duration-200 cursor-pointer active:scale-90 hover:scale-[1.02] ${
                           savedSpotIds.includes(selectedDestination.id)
-                            ? 'bg-rose-500 text-white'
+                            ? 'bg-rose-500 text-white shadow-xs'
                             : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         }`}
                       >
@@ -284,9 +295,21 @@ export const MapView: React.FC<MapViewProps> = ({
                   }`}
                 >
                   <img
-                    src={dest.image}
+                    src={getDirectImageUrl(dest.image)}
                     alt={destTitle}
-                    className="w-14 h-14 rounded-xl object-cover shrink-0"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallbackCount = parseInt(target.dataset.fallbackCount || '0', 10);
+                      if (fallbackCount === 0 && (dest.image.includes('drive.google.com') || dest.image.includes('file/d/'))) {
+                        target.dataset.fallbackCount = '1';
+                        target.src = getDriveThumbnailUrl(dest.image);
+                      } else if (fallbackCount < 2) {
+                        target.dataset.fallbackCount = '2';
+                        target.src = FALLBACK_BACKUP_IMAGE;
+                      }
+                    }}
+                    className="w-16 h-16 rounded-2xl object-cover shrink-0 border border-slate-200/80 shadow-2xs bg-slate-100 transition-all duration-300"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">

@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../lib/firebase';
-import { UserProfile } from '../types';
+import { UserProfile, SubscriptionInfo, TransactionRecord } from '../types';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -21,6 +21,9 @@ interface AuthContextType {
   signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
+  topUpWallet: (amount: number, method: 'bakong_khqr' | 'credit_card' | 'aba_pay', referenceId?: string) => Promise<TransactionRecord>;
+  chargeSubscription: (plan: 'trip-pass' | 'wisgo-plus', amount: number, paymentMethod: 'bakong_khqr' | 'credit_card' | 'wallet_balance' | 'aba_pay') => Promise<{ subscription: SubscriptionInfo; transaction: TransactionRecord }>;
+  cancelSubscription: () => Promise<void>;
 }
 
 const defaultPreferences = {
@@ -39,7 +42,10 @@ const AuthContext = createContext<AuthContextType>({
   signInWithGoogleAccount: async () => {},
   signInAsGuest: async () => {},
   logout: async () => {},
-  updateUserPreferences: async () => {}
+  updateUserPreferences: async () => {},
+  topUpWallet: async () => ({} as any),
+  chargeSubscription: async () => ({} as any),
+  cancelSubscription: async () => {}
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -64,6 +70,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: user.displayName || existingData.name || 'Khmer Explorer',
           email: user.email || existingData.email,
           avatar: user.photoURL || existingData.avatar || '',
+          walletBalance: existingData.walletBalance ?? 0,
+          subscription: existingData.subscription || { plan: 'free', status: 'active', startDate: now },
+          transactions: existingData.transactions || []
         };
         try {
           await updateDoc(userDocRef, {
@@ -75,6 +84,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.warn('Could not update profile doc in Firestore:', updateErr);
         }
         setUserProfile(updatedProfile);
+        try {
+          if (updatedProfile.email) {
+            localStorage.setItem('wisgo_last_account', JSON.stringify({
+              email: updatedProfile.email,
+              name: updatedProfile.name,
+              avatar: updatedProfile.avatar,
+              lastUsed: new Date().toISOString()
+            }));
+          }
+        } catch (e) {}
         return updatedProfile;
       } else {
         // Create initial profile in users collection
@@ -84,6 +103,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: user.email || '',
           avatar: user.photoURL || '',
           createdAt: now,
+          walletBalance: 0,
+          subscription: { plan: 'free', status: 'active', startDate: now },
+          transactions: [],
           preferences: defaultPreferences
         };
         try {
@@ -92,6 +114,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.warn('Could not create profile doc in Firestore:', setErr);
         }
         setUserProfile(newProfile);
+        try {
+          if (newProfile.email) {
+            localStorage.setItem('wisgo_last_account', JSON.stringify({
+              email: newProfile.email,
+              name: newProfile.name,
+              avatar: newProfile.avatar,
+              lastUsed: new Date().toISOString()
+            }));
+          }
+        } catch (e) {}
         return newProfile;
       }
     } catch (err) {
@@ -103,9 +135,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: user.email || '',
         avatar: user.photoURL || '',
         createdAt: new Date().toISOString(),
+        walletBalance: 0,
+        subscription: { plan: 'free', status: 'active', startDate: new Date().toISOString() },
+        transactions: [],
         preferences: defaultPreferences
       };
       setUserProfile(fallbackProfile);
+      try {
+        if (fallbackProfile.email) {
+          localStorage.setItem('wisgo_last_account', JSON.stringify({
+            email: fallbackProfile.email,
+            name: fallbackProfile.name,
+            avatar: fallbackProfile.avatar,
+            lastUsed: new Date().toISOString()
+          }));
+        }
+      } catch (e) {}
       return fallbackProfile;
     }
   };
@@ -163,7 +208,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return null;
     } catch (error: any) {
-      console.error('Firebase Google Sign-In Error:', error);
+      console.warn('Firebase Google Sign-In Popup notice:', error?.message || error);
       throw error;
     }
   };
@@ -213,6 +258,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     localStorage.setItem('wisgo_guest_user', JSON.stringify({ user: googleUser, profile }));
+    try {
+      localStorage.setItem('wisgo_last_account', JSON.stringify({
+        email: profile.email,
+        name: profile.name,
+        avatar: profile.avatar,
+        lastUsed: new Date().toISOString()
+      }));
+    } catch (e) {}
     setCurrentUser(googleUser as any);
     setUserProfile(profile);
   };
@@ -274,6 +327,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setUserProfile(updatedProfile);
 
+    // Save to local storage if guest/fallback
+    const savedGuest = localStorage.getItem('wisgo_guest_user');
+    if (savedGuest) {
+      try {
+        const parsed = JSON.parse(savedGuest);
+        localStorage.setItem('wisgo_guest_user', JSON.stringify({ ...parsed, profile: updatedProfile }));
+      } catch (e) {
+        // ignore
+      }
+    }
+
     try {
       const userDocRef = doc(db, 'users', currentUser.uid);
       await updateDoc(userDocRef, {
@@ -281,6 +345,177 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     } catch (err) {
       console.error('Failed to update preferences in Firestore:', err);
+    }
+  };
+
+  const topUpWallet = async (
+    amount: number, 
+    method: 'bakong_khqr' | 'credit_card' | 'aba_pay',
+    referenceId = 'KHQR-' + Math.floor(100000 + Math.random() * 900000)
+  ): Promise<TransactionRecord> => {
+    if (!currentUser || !userProfile) {
+      throw new Error('User must be signed in to top up wallet');
+    }
+
+    const currentBalance = userProfile.walletBalance ?? 0;
+    const newBalance = parseFloat((currentBalance + amount).toFixed(2));
+    const newTx: TransactionRecord = {
+      id: 'txn-' + Date.now().toString(36),
+      type: 'top_up',
+      amount,
+      currency: 'USD',
+      paymentMethod: method,
+      status: 'completed',
+      date: new Date().toISOString(),
+      referenceId
+    };
+
+    const updatedTransactions = [newTx, ...(userProfile.transactions || [])];
+    const updatedProfile: UserProfile = {
+      ...userProfile,
+      walletBalance: newBalance,
+      transactions: updatedTransactions
+    };
+
+    setUserProfile(updatedProfile);
+
+    // Persist to local storage
+    const savedGuest = localStorage.getItem('wisgo_guest_user');
+    if (savedGuest) {
+      try {
+        const parsed = JSON.parse(savedGuest);
+        localStorage.setItem('wisgo_guest_user', JSON.stringify({ ...parsed, profile: updatedProfile }));
+      } catch (e) {}
+    }
+
+    // Persist to Firestore
+    try {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await updateDoc(userDocRef, {
+        walletBalance: newBalance,
+        transactions: updatedTransactions
+      });
+    } catch (err) {
+      console.warn('Could not sync top up to Firestore:', err);
+    }
+
+    return newTx;
+  };
+
+  const chargeSubscription = async (
+    plan: 'trip-pass' | 'wisgo-plus',
+    amount: number,
+    paymentMethod: 'bakong_khqr' | 'credit_card' | 'wallet_balance' | 'aba_pay'
+  ): Promise<{ subscription: SubscriptionInfo; transaction: TransactionRecord }> => {
+    if (!currentUser || !userProfile) {
+      throw new Error('User must be signed in to subscribe');
+    }
+
+    const now = new Date();
+    const expiry = new Date();
+    if (plan === 'trip-pass') {
+      expiry.setDate(now.getDate() + 30); // 30 days coverage for single trip
+    } else {
+      expiry.setMonth(now.getMonth() + 1); // 1 month recurrent
+    }
+
+    const refId = 'SUB-' + Math.floor(100000 + Math.random() * 900000);
+    const newTx: TransactionRecord = {
+      id: 'txn-' + Date.now().toString(36),
+      type: 'subscription_purchase',
+      amount,
+      currency: 'USD',
+      planName: plan === 'trip-pass' ? 'Trip Pass' : 'WisGo Plus',
+      paymentMethod,
+      status: 'completed',
+      date: now.toISOString(),
+      referenceId: refId
+    };
+
+    let currentBalance = userProfile.walletBalance ?? 0;
+    if (paymentMethod === 'wallet_balance') {
+      if (currentBalance < amount) {
+        throw new Error('Insufficient wallet balance');
+      }
+      currentBalance = parseFloat((currentBalance - amount).toFixed(2));
+    }
+
+    const newSubscription: SubscriptionInfo = {
+      plan,
+      status: 'active',
+      startDate: now.toISOString(),
+      expiryDate: expiry.toISOString(),
+      transactionId: refId,
+      autoRenew: plan === 'wisgo-plus',
+      amountPaid: amount,
+      currency: 'USD'
+    };
+
+    const updatedTransactions = [newTx, ...(userProfile.transactions || [])];
+    const updatedProfile: UserProfile = {
+      ...userProfile,
+      walletBalance: currentBalance,
+      subscription: newSubscription,
+      transactions: updatedTransactions
+    };
+
+    setUserProfile(updatedProfile);
+
+    // Save to local storage
+    const savedGuest = localStorage.getItem('wisgo_guest_user');
+    if (savedGuest) {
+      try {
+        const parsed = JSON.parse(savedGuest);
+        localStorage.setItem('wisgo_guest_user', JSON.stringify({ ...parsed, profile: updatedProfile }));
+      } catch (e) {}
+    }
+
+    // Save to Firestore
+    try {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await updateDoc(userDocRef, {
+        walletBalance: currentBalance,
+        subscription: newSubscription,
+        transactions: updatedTransactions
+      });
+    } catch (err) {
+      console.warn('Could not sync subscription to Firestore:', err);
+    }
+
+    return { subscription: newSubscription, transaction: newTx };
+  };
+
+  const cancelSubscription = async () => {
+    if (!currentUser || !userProfile || !userProfile.subscription) return;
+
+    const canceledSub: SubscriptionInfo = {
+      ...userProfile.subscription,
+      status: 'canceled',
+      autoRenew: false
+    };
+
+    const updatedProfile: UserProfile = {
+      ...userProfile,
+      subscription: canceledSub
+    };
+
+    setUserProfile(updatedProfile);
+
+    const savedGuest = localStorage.getItem('wisgo_guest_user');
+    if (savedGuest) {
+      try {
+        const parsed = JSON.parse(savedGuest);
+        localStorage.setItem('wisgo_guest_user', JSON.stringify({ ...parsed, profile: updatedProfile }));
+      } catch (e) {}
+    }
+
+    try {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await updateDoc(userDocRef, {
+        subscription: canceledSub
+      });
+    } catch (err) {
+      console.warn('Could not cancel subscription in Firestore:', err);
     }
   };
 
@@ -295,7 +530,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signInWithGoogleAccount,
         signInAsGuest,
         logout,
-        updateUserPreferences
+        updateUserPreferences,
+        topUpWallet,
+        chargeSubscription,
+        cancelSubscription
       }}
     >
       {children}

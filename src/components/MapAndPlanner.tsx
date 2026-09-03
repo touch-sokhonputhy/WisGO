@@ -392,7 +392,7 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
   });
 
   return (
-    <div className="space-y-6">
+    <div id="map-section" className="space-y-6">
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
         <div>
