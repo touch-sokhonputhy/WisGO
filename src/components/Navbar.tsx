@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { CurrencySwitcher } from './CurrencySwitcher';
 import { smoothScrollTo } from '../utils/scrollUtils';
 
 interface NavbarProps {
@@ -190,20 +191,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Dedicated Language Switcher Component */}
           <LanguageSwitcher compact={false} />
 
-          {/* Travel Preferences Pill */}
-          <button
-            type="button"
-            onClick={onOpenPreferences}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-xs font-semibold text-slate-700 transition-all shadow-2xs cursor-pointer active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C]"
-            title="Travel Preferences & Currency"
-            aria-label="Travel Preferences"
-          >
-            <div className="flex items-center gap-1 text-[#0B7A5C]">
-              <DollarSign className="w-3.5 h-3.5" />
-              <span>{userProfile?.preferences?.preferredCurrency?.split(' ')[0] || 'USD'}</span>
-            </div>
-            <SlidersHorizontal className="w-3 h-3 text-slate-400" />
-          </button>
+          {/* Travel Preferences & Currency Switcher Component */}
+          <CurrencySwitcher onOpenPreferences={onOpenPreferences} />
 
           {/* Auth Button or Profile Dropdown */}
           {currentUser ? (

@@ -80,6 +80,18 @@ export const Pricing: React.FC<PricingProps> = ({ onNavigateTab, onOpenAuthModal
     return () => clearInterval(interval);
   }, [selectedPlanModal, isTopUpOpen, paymentMethod, topUpMethod]);
 
+  // Synchronize currency display mode when preferred currency changes
+  useEffect(() => {
+    const pref = userProfile?.preferences?.preferredCurrency;
+    if (pref) {
+      if (pref.includes('KHR')) {
+        setCurrencyMode('khr');
+      } else if (pref.includes('USD')) {
+        setCurrencyMode('usd');
+      }
+    }
+  }, [userProfile?.preferences?.preferredCurrency]);
+
   const currentWalletBalance = userProfile?.walletBalance ?? 0;
   const currentPlan = userProfile?.subscription?.status === 'active' ? userProfile.subscription.plan : 'free';
 

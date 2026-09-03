@@ -321,25 +321,34 @@ export const useLanguage = () => useContext(LanguageContext);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { userProfile, updateUserPreferences } = useAuth();
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem('wisgo_language');
+      if (saved === 'km' || saved === 'en') return saved;
+    } catch (e) {}
+    return 'en';
+  });
 
   // Sync language with user profile if available
   useEffect(() => {
     const prefLang = userProfile?.preferences?.preferredLanguage;
     if (prefLang === 'Khmer' || prefLang === 'km' || prefLang === 'Khmer (ភាសាខ្មែរ)') {
       setLanguageState('km');
+      try { localStorage.setItem('wisgo_language', 'km'); } catch (e) {}
     } else if (prefLang === 'English' || prefLang === 'en') {
       setLanguageState('en');
+      try { localStorage.setItem('wisgo_language', 'en'); } catch (e) {}
     }
   }, [userProfile?.preferences?.preferredLanguage]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    if (userProfile) {
-      updateUserPreferences({
-        preferredLanguage: lang === 'km' ? 'Khmer' : 'English'
-      });
-    }
+    try {
+      localStorage.setItem('wisgo_language', lang);
+    } catch (e) {}
+    updateUserPreferences({
+      preferredLanguage: lang === 'km' ? 'Khmer (ភាសាខ្មែរ)' : 'English'
+    });
   };
 
   const toggleLanguage = () => {

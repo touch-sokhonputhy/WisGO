@@ -42,6 +42,16 @@ export const PreferencesModal: React.FC<PreferencesModalProps> = ({ isOpen, onCl
   const [dietary, setDietary] = useState<string[]>(currentPrefs?.dietaryRestrictions || []);
   const [saving, setSaving] = useState(false);
 
+  // Sync state whenever modal opens or preferences update
+  React.useEffect(() => {
+    if (isOpen && currentPrefs) {
+      if (currentPrefs.preferredCurrency) setCurrency(currentPrefs.preferredCurrency);
+      if (currentPrefs.preferredLanguage) setPrefLanguage(currentPrefs.preferredLanguage);
+      if (currentPrefs.interests) setInterests(currentPrefs.interests);
+      if (currentPrefs.dietaryRestrictions) setDietary(currentPrefs.dietaryRestrictions);
+    }
+  }, [isOpen, currentPrefs]);
+
   if (!isOpen) return null;
 
   const toggleInterest = (item: string) => {

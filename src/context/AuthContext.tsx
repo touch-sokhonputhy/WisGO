@@ -33,6 +33,18 @@ const defaultPreferences = {
   dietaryRestrictions: []
 };
 
+export const getStoredPreferences = () => {
+  try {
+    const saved = localStorage.getItem('wisgo_preferences');
+    if (saved) {
+      return { ...defaultPreferences, ...JSON.parse(saved) };
+    }
+  } catch (e) {
+    // ignore
+  }
+  return defaultPreferences;
+};
+
 const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   userProfile: null,
@@ -188,7 +200,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         if (!localStorage.getItem('wisgo_guest_user')) {
           setCurrentUser(null);
-          setUserProfile(null);
+          // Maintain a guest profile with saved preferences so preferences & currency are always active
+          const initialPrefs = getStoredPreferences();
+          setUserProfile({
+            uid: 'guest',
+            name: 'Khmer Explorer',
+            email: '',
+            avatar: '',
+            createdAt: new Date().toISOString(),
+            walletBalance: 0,
+            subscription: { plan: 'free', status: 'active', startDate: new Date().toISOString() },
+            transactions: [],
+            preferences: initialPrefs
+          });
         }
       }
       setLoading(false);
@@ -308,20 +332,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error logging out:', error);
     }
     setCurrentUser(null);
-    setUserProfile(null);
+    const initialPrefs = getStoredPreferences();
+    setUserProfile({
+      uid: 'guest',
+      name: 'Khmer Explorer',
+      email: '',
+      avatar: '',
+      createdAt: new Date().toISOString(),
+      walletBalance: 0,
+      subscription: { plan: 'free', status: 'active', startDate: new Date().toISOString() },
+      transactions: [],
+      preferences: initialPrefs
+    });
   };
 
   const updateUserPreferences = async (newPrefs: Partial<NonNullable<UserProfile['preferences']>>) => {
-    if (!currentUser || !userProfile) return;
-
-    const currentPrefs = userProfile.preferences || defaultPreferences;
+    const currentPrefs = userProfile?.preferences || getStoredPreferences();
     const updatedPrefs = {
       ...currentPrefs,
       ...newPrefs
     };
 
-    const updatedProfile: UserProfile = {
+    // Always persist to localStorage so preferences are immediately saved for guests
+    try {
+      localStorage.setItem('wisgo_preferences', JSON.stringify(updatedPrefs));
+    } catch (e) {
+      // ignore
+    }
+
+    const updatedProfile: UserProfile = userProfile ? {
       ...userProfile,
+      preferences: updatedPrefs
+    } : {
+      uid: 'guest',
+      name: 'Khmer Explorer',
+      email: '',
+      avatar: '',
+      createdAt: new Date().toISOString(),
+      walletBalance: 0,
+      subscription: { plan: 'free', status: 'active', startDate: new Date().toISOString() },
+      transactions: [],
       preferences: updatedPrefs
     };
 
@@ -338,13 +388,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userDocRef, {
-        preferences: updatedPrefs
-      });
-    } catch (err) {
-      console.error('Failed to update preferences in Firestore:', err);
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          preferences: updatedPrefs
+        });
+      } catch (err) {
+        console.error('Failed to update preferences in Firestore:', err);
+      }
     }
   };
 
