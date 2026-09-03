@@ -9,7 +9,7 @@ interface PreferencesModalProps {
 }
 
 const LANGUAGES = ['English', 'Khmer (ភាសាខ្មែរ)', 'French', 'Chinese', 'Japanese', 'Korean', 'Spanish', 'German'];
-const CURRENCIES = ['USD ($)', 'KHR (៛)', 'EUR (€)', 'GBP (£)', 'AUD ($)', 'JPY (¥)'];
+const CURRENCIES = ['USD ($)', 'KHR (៛)'];
 
 const INTEREST_OPTIONS = [
   { en: 'Temples & Heritage', km: 'ប្រាសាទ & បេតិកភណ្ឌ' },

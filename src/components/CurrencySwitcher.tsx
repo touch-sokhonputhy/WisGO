@@ -13,12 +13,8 @@ export interface CurrencyItem {
 }
 
 export const SUPPORTED_CURRENCIES: CurrencyItem[] = [
-  { code: 'KHR', symbol: '៛', name: 'Cambodian Riel', khmerName: 'ប្រាក់រៀលខ្មែរ', flag: '🇰🇭', fullLabel: 'KHR (៛)' },
   { code: 'USD', symbol: '$', name: 'US Dollar', khmerName: 'ដុល្លារអាមេរិក', flag: '🇺🇸', fullLabel: 'USD ($)' },
-  { code: 'EUR', symbol: '€', name: 'Euro', khmerName: 'ប្រាក់អឺរ៉ូ', flag: '🇪🇺', fullLabel: 'EUR (€)' },
-  { code: 'GBP', symbol: '£', name: 'British Pound', khmerName: 'ផោនអង់គ្លេស', flag: '🇬🇧', fullLabel: 'GBP (£)' },
-  { code: 'JPY', symbol: '¥', name: 'Japanese Yen', khmerName: 'យ៉េនជប៉ុន', flag: '🇯🇵', fullLabel: 'JPY (¥)' },
-  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar', khmerName: 'ដុល្លារអូស្ត្រាលី', flag: '🇦🇺', fullLabel: 'AUD ($)' },
+  { code: 'KHR', symbol: '៛', name: 'Cambodian Riel', khmerName: 'ប្រាក់រៀលខ្មែរ', flag: '🇰🇭', fullLabel: 'KHR (៛)' },
 ];
 
 interface CurrencySwitcherProps {
@@ -81,25 +77,26 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
       {/* Trigger Button - Main Currency Pill */}
       <button
         type="button"
+        id="currency-switcher-btn"
         onClick={() => setIsOpen(prev => !prev)}
         className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
           isKhmer
-            ? 'bg-[#EBFBF4] hover:bg-[#D8F6E9] border-[#21C87A]/60 text-[#0B7A5C]'
-            : 'bg-[#F8FCFA] hover:bg-slate-100 border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900'
+            ? 'bg-[#EBFBF4] hover:bg-[#DDF6EC] border-[#0B7A5C]/40 text-[#0B7A5C]'
+            : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-800'
         }`}
-        title={`Change Currency (Current: ${currentCurrency.name}) / ប្តូររូបិយប័ណ្ណ`}
+        title={`Switch Currency (USD / KHR Riel) • Current: ${currentCurrency.name} / ប្តូររូបិយប័ណ្ណ`}
         aria-expanded={isOpen}
         aria-haspopup="menu"
       >
         <span className="text-sm shrink-0 select-none">{currentCurrency.flag}</span>
         
-        <span className={`font-black flex items-center gap-0.5 ${isKhmer ? 'text-[#0B7A5C]' : 'text-slate-800'}`}>
+        <span className={`font-black flex items-center gap-1 ${isKhmer ? 'text-[#0B7A5C]' : 'text-slate-800'}`}>
           <span className="text-xs">{currentCurrency.symbol}</span>
           <span>{currentCurrency.code}</span>
         </span>
 
         {isKhmer && (
-          <span className="hidden lg:inline-block w-1.5 h-1.5 rounded-full bg-[#0B7A5C] animate-pulse" />
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0B7A5C] animate-pulse" />
         )}
 
         <ChevronDown 
@@ -112,7 +109,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
       {/* Dropdown Menu */}
       {isOpen && (
         <div 
-          className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+          className="absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
           role="menu"
         >
           {/* Header */}
@@ -121,12 +118,12 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
               <Coins className="w-3 h-3 text-[#0B7A5C]" />
               <span>{language === 'km' ? 'រូបិយប័ណ្ណ' : 'Display Currency'}</span>
             </span>
-            <span className="text-[9px] font-semibold text-[#0B7A5C] bg-[#E8F8F2] px-1.5 py-0.2 rounded-md">
+            <span className="text-[9px] font-bold text-[#0B7A5C] bg-[#E8F8F2] px-1.5 py-0.5 rounded-md">
               1 $ ≈ 4,050 ៛
             </span>
           </div>
 
-          {/* Currencies List */}
+          {/* Currencies List (USD & Riel Only) */}
           <div className="py-1">
             {SUPPORTED_CURRENCIES.map((item) => {
               const isSelected = currentCurrency.code === item.code;
@@ -135,19 +132,19 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                   key={item.code}
                   type="button"
                   onClick={() => handleSelectCurrency(item)}
-                  className={`w-full text-left px-3.5 py-2 text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                  className={`w-full text-left px-3.5 py-2.5 text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
                     isSelected
                       ? 'bg-[#EBFBF4] text-[#0B7A5C]'
                       : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                   role="menuitem"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <span className="text-base shrink-0">{item.flag}</span>
                     <div className="truncate">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-extrabold text-slate-900">{item.code}</span>
-                        <span className="text-[11px] font-semibold text-slate-500">({item.symbol})</span>
+                        <span className="font-black text-slate-900">{item.code}</span>
+                        <span className="text-xs font-bold text-slate-500">({item.symbol})</span>
                       </div>
                       <div className="text-[10px] text-slate-400 font-medium truncate">
                         {language === 'km' ? item.khmerName : item.name}
@@ -156,7 +153,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
                   </div>
 
                   {isSelected ? (
-                    <Check className="w-4 h-4 text-[#0B7A5C] shrink-0 ml-2" />
+                    <Check className="w-4 h-4 text-[#0B7A5C] shrink-0 ml-2 stroke-[2.5]" />
                   ) : null}
                 </button>
               );

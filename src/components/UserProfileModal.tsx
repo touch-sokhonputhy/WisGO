@@ -10,13 +10,7 @@ interface UserProfileModalProps {
 const LANGUAGES = ['English', 'Japanese', 'Spanish', 'French', 'German', 'Chinese', 'Korean', 'Thai'];
 const CURRENCIES = [
   'USD ($)', 
-  'EUR (€)', 
-  'JPY (¥)', 
-  'GBP (£)', 
-  'AUD ($)', 
-  'CAD ($)', 
-  'SGD ($)', 
-  'CNY (¥)'
+  'KHR (៛)'
 ];
 const INTEREST_OPTIONS = [
   'Historical Sites',
