@@ -308,7 +308,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </ol>
 
             <a
-              href="https://console.firebase.google.com/project/tough-oxygen-5s6r9/authentication/settings"
+              href="https://console.firebase.google.com/project/wisgo-3a9af/authentication/settings"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#0B7A5C] hover:underline"
