@@ -3,6 +3,14 @@
  * taking into account fixed navigation bar offsets and dynamic tab transitions.
  */
 
+export function scrollToTop(behavior: ScrollBehavior = 'smooth'): void {
+  if (typeof window === 'undefined') return;
+  window.scrollTo({
+    top: 0,
+    behavior
+  });
+}
+
 export function smoothScrollTo(targetId: string, offset = 80): void {
   if (typeof window === 'undefined') return;
 

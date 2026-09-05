@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CurrencySwitcher } from './CurrencySwitcher';
-import { smoothScrollTo } from '../utils/scrollUtils';
+import { scrollToTop } from '../utils/scrollUtils';
 
 interface NavbarProps {
   onOpenPreferences: () => void;
@@ -24,6 +24,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { t } = useLanguage();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleNavTab = (tab: 'explore' | 'planner' | 'assistant' | 'trips' | 'favorites' | 'pricing') => {
+    setActiveTab(tab);
+    // Only scroll to top if user was scrolled down into the page
+    if (typeof window !== 'undefined' && window.scrollY > 120) {
+      scrollToTop('smooth');
+    }
+  };
 
   // Close dropdown on outside click or Escape key for clean UX
   useEffect(() => {
@@ -60,10 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 flex-nowrap">
           <button 
             type="button"
-            onClick={() => {
-              setActiveTab('explore');
-              smoothScrollTo('main-content', 75);
-            }}
+            onClick={() => handleNavTab('explore')}
             className="flex items-center gap-2 sm:gap-2.5 min-h-[40px] text-lg sm:text-xl font-black tracking-tight text-[#1E293B] hover:opacity-90 active:scale-98 transition-all cursor-pointer group rounded-xl focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] shrink-0 whitespace-nowrap"
             aria-label="WisGO Cambodia Home"
           >
@@ -87,10 +92,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('explore');
-              smoothScrollTo('explore-section', 75);
-            }}
+            onClick={() => handleNavTab('explore')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'explore'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
@@ -103,10 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('planner');
-              smoothScrollTo('map-section', 75);
-            }}
+            onClick={() => handleNavTab('planner')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'planner'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
@@ -119,10 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('assistant');
-              smoothScrollTo('main-content', 75);
-            }}
+            onClick={() => handleNavTab('assistant')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none relative focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'assistant'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
@@ -138,10 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('trips');
-              smoothScrollTo('main-content', 75);
-            }}
+            onClick={() => handleNavTab('trips')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'trips'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
@@ -154,10 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('favorites');
-              smoothScrollTo('main-content', 75);
-            }}
+            onClick={() => handleNavTab('favorites')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'favorites'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'
@@ -170,10 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('pricing');
-              smoothScrollTo('main-content', 75);
-            }}
+            onClick={() => handleNavTab('pricing')}
             className={`px-2 md:px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold leading-none transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 select-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
               activeTab === 'pricing'
                 ? 'bg-[#0B7A5C] text-white shadow-xs'

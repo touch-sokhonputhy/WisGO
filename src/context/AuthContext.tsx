@@ -21,6 +21,7 @@ interface AuthContextType {
   signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
+  updateSavedSpots: (spotIds: string[]) => Promise<void>;
   topUpWallet: (amount: number, method: 'bakong_khqr' | 'credit_card' | 'aba_pay', referenceId?: string) => Promise<TransactionRecord>;
   chargeSubscription: (plan: 'trip-pass' | 'wisgo-plus', amount: number, paymentMethod: 'bakong_khqr' | 'credit_card' | 'wallet_balance' | 'aba_pay') => Promise<{ subscription: SubscriptionInfo; transaction: TransactionRecord }>;
   cancelSubscription: () => Promise<void>;
@@ -55,6 +56,7 @@ const AuthContext = createContext<AuthContextType>({
   signInAsGuest: async () => {},
   logout: async () => {},
   updateUserPreferences: async () => {},
+  updateSavedSpots: async () => {},
   topUpWallet: async () => ({} as any),
   chargeSubscription: async () => ({} as any),
   cancelSubscription: async () => {}
@@ -77,6 +79,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (userSnap.exists()) {
         const existingData = userSnap.data() as UserProfile;
+        const localSaved = (() => {
+          try {
+            const raw = localStorage.getItem('wisgo_saved_spots');
+            return raw ? JSON.parse(raw) : null;
+          } catch { return null; }
+        })();
+
         const updatedProfile: UserProfile = {
           ...existingData,
           name: user.displayName || existingData.name || 'Khmer Explorer',
@@ -84,18 +93,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           avatar: user.photoURL || existingData.avatar || '',
           walletBalance: existingData.walletBalance ?? 0,
           subscription: existingData.subscription || { plan: 'free', status: 'active', startDate: now },
-          transactions: existingData.transactions || []
+          transactions: existingData.transactions || [],
+          savedSpots: existingData.savedSpots || localSaved || []
         };
         try {
           await updateDoc(userDocRef, {
             name: updatedProfile.name,
             email: updatedProfile.email,
-            avatar: updatedProfile.avatar
+            avatar: updatedProfile.avatar,
+            savedSpots: updatedProfile.savedSpots
           });
         } catch (updateErr) {
           console.warn('Could not update profile doc in Firestore:', updateErr);
         }
         setUserProfile(updatedProfile);
+        if (updatedProfile.savedSpots && updatedProfile.savedSpots.length > 0) {
+          try {
+            localStorage.setItem('wisgo_saved_spots', JSON.stringify(updatedProfile.savedSpots));
+          } catch (e) {}
+        }
         try {
           if (updatedProfile.email) {
             localStorage.setItem('wisgo_last_account', JSON.stringify({
@@ -271,11 +287,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const userDocRef = doc(db, 'users', uid);
       const snap = await getDoc(userDocRef);
+      const localSaved = (() => {
+        try {
+          const raw = localStorage.getItem('wisgo_saved_spots');
+          return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+      })();
+
       if (snap.exists()) {
         const data = snap.data() as UserProfile;
         profile.preferences = data.preferences || defaultPreferences;
+        profile.savedSpots = data.savedSpots || localSaved || [];
       } else {
+        profile.savedSpots = localSaved || [];
         await setDoc(userDocRef, profile);
+      }
+      if (profile.savedSpots && profile.savedSpots.length > 0) {
+        try {
+          localStorage.setItem('wisgo_saved_spots', JSON.stringify(profile.savedSpots));
+        } catch (e) {}
       }
     } catch (err) {
       console.warn('Could not sync user profile to Firestore, using local storage:', err);
@@ -396,6 +426,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       } catch (err) {
         console.error('Failed to update preferences in Firestore:', err);
+      }
+    }
+  };
+
+  const updateSavedSpots = async (spotIds: string[]) => {
+    // Always persist to localStorage for instant local access
+    try {
+      localStorage.setItem('wisgo_saved_spots', JSON.stringify(spotIds));
+    } catch (e) {
+      // ignore
+    }
+
+    if (userProfile) {
+      const updatedProfile: UserProfile = {
+        ...userProfile,
+        savedSpots: spotIds
+      };
+      setUserProfile(updatedProfile);
+
+      const savedGuest = localStorage.getItem('wisgo_guest_user');
+      if (savedGuest) {
+        try {
+          const parsed = JSON.parse(savedGuest);
+          localStorage.setItem('wisgo_guest_user', JSON.stringify({ ...parsed, profile: updatedProfile }));
+        } catch (e) {}
+      }
+    }
+
+    // Sync to user profile in Cloud Firestore if authenticated
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          savedSpots: spotIds
+        });
+      } catch (err) {
+        console.warn('Failed to sync saved spots to Firestore:', err);
       }
     }
   };
@@ -583,6 +650,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signInAsGuest,
         logout,
         updateUserPreferences,
+        updateSavedSpots,
         topUpWallet,
         chargeSubscription,
         cancelSubscription

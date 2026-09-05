@@ -3,7 +3,7 @@ import { Globe, ExternalLink, Mail, MapPin, Sparkles, Heart, Compass, ShieldChec
 import { useLanguage } from '../context/LanguageContext';
 import { WisgoLogo } from './WisgoLogo';
 import { FacebookIcon, TikTokIcon, YoutubeIcon } from './SocialIcons';
-import { smoothScrollTo } from '../utils/scrollUtils';
+import { scrollToTop } from '../utils/scrollUtils';
 
 interface FooterProps {
   onSelectProvince?: (province: string) => void;
@@ -237,7 +237,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
                 <button 
                   onClick={() => {
                     onNavigateTab?.('explore');
-                    smoothScrollTo('explore-section', 75);
+                    scrollToTop('smooth');
                   }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
@@ -249,7 +249,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
                 <button 
                   onClick={() => {
                     onNavigateTab?.('planner');
-                    smoothScrollTo('map-section', 75);
+                    scrollToTop('smooth');
                   }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
@@ -261,7 +261,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
                 <button 
                   onClick={() => {
                     onNavigateTab?.('assistant');
-                    smoothScrollTo('main-content', 75);
+                    scrollToTop('smooth');
                   }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
@@ -273,7 +273,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
                 <button 
                   onClick={() => {
                     onNavigateTab?.('favorites');
-                    smoothScrollTo('main-content', 75);
+                    scrollToTop('smooth');
                   }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >
@@ -285,7 +285,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectProvince, onNavigateTab 
                 <button 
                   onClick={() => {
                     onNavigateTab?.('pricing');
-                    smoothScrollTo('main-content', 75);
+                    scrollToTop('smooth');
                   }} 
                   className="hover:text-[#0B7A5C] transition-colors cursor-pointer flex items-center gap-1.5"
                 >

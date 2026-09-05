@@ -241,15 +241,18 @@ Formatting Rules:
       }
     }
 
+    let isFallback = false;
     if (!replyText) {
-      console.log('[Vercel WisGO AI] Live model capacity temporarily limited; serving verified WisGO local guide data.');
+      console.log('[Vercel WisGO AI] Live model capacity temporarily limited or key missing; serving verified WisGO local guide data.');
       replyText = generateLocalWisgoResponse(message, userPreferences?.preferredLanguage);
+      isFallback = true;
     }
 
-    return res.status(200).json({ text: replyText });
+    return res.status(200).json({ text: replyText, isFallback });
   } catch (error: any) {
+    console.error('[Vercel WisGO AI Error]:', error?.message || error);
     const fallbackText = generateLocalWisgoResponse(req.body?.message || '', req.body?.userPreferences?.preferredLanguage);
-    return res.status(200).json({ text: fallbackText });
+    return res.status(200).json({ text: fallbackText, isFallback: true, errorDetail: error?.message });
   }
 }
 

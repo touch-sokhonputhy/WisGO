@@ -50,7 +50,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
   const [currentItinerary, setCurrentItinerary] = useState<TripPlan | null>(initialTripContext || null);
   const [savedTripIds, setSavedTripIds] = useState<Set<string>>(new Set());
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   // Update initial welcome message if no user interaction yet
   useEffect(() => {
@@ -79,11 +80,21 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
     }
   }, [initialTripContext]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior
+      });
+    }
   };
 
   useEffect(() => {
+    // Prevent auto-scrolling on initial tab opening or mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     scrollToBottom();
   }, [messages, loading]);
 
@@ -299,7 +310,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
         </div>
 
         {/* Messages Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-4 bg-[#F8FCFA]">
+        <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-4 bg-[#F8FCFA]">
           {messages.map(msg => {
             const parsedPlan = msg.sender === 'assistant' ? parseItineraryFromResponse(msg.text) : null;
             const cleanedText = msg.sender === 'assistant' ? cleanChatText(msg.text) : msg.text;
@@ -365,8 +376,6 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
           {loading && (
             <AIAssistantSkeleton userPrompt={lastSentPrompt} />
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Input Box */}

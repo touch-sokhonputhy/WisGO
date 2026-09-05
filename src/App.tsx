@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
 import { MobileBottomNav } from './components/MobileBottomNav';
@@ -15,11 +15,12 @@ import { Destination, TripPlan } from './types';
 import { CAMBODIA_DESTINATIONS } from './data/mockDestinations';
 import { getDirectImageUrl, getDriveThumbnailUrl, FALLBACK_BACKUP_IMAGE } from './lib/imageUtils';
 import { MapPin, Compass, Sparkles, Heart, Search, Filter, Route, Check, X, Bookmark } from 'lucide-react';
-import { smoothScrollTo } from './utils/scrollUtils';
+import { scrollToTop } from './utils/scrollUtils';
 import { MyTripsDashboard } from './components/MyTripsDashboard';
 
 function MainApp() {
   const { language, t, tProvince, tCategory } = useLanguage();
+  const { userProfile, updateSavedSpots } = useAuth();
   const [activeTab, setActiveTab] = useState<'explore' | 'planner' | 'assistant' | 'trips' | 'favorites' | 'pricing'>('explore');
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -52,11 +53,30 @@ function MainApp() {
     }
   }, []);
 
-  // Saved Destinations State
-  const [savedSpotIds, setSavedSpotIds] = useState<string[]>([
-    CAMBODIA_DESTINATIONS[0].id,
-    CAMBODIA_DESTINATIONS[1].id
-  ]);
+  // Saved Destinations State initialized from local storage or default
+  const [savedSpotIds, setSavedSpotIds] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('wisgo_saved_spots');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {}
+    return [
+      CAMBODIA_DESTINATIONS[0].id,
+      CAMBODIA_DESTINATIONS[1].id
+    ];
+  });
+
+  // Keep local savedSpotIds in sync when user account changes or loads from cloud profile
+  useEffect(() => {
+    if (userProfile?.savedSpots && Array.isArray(userProfile.savedSpots)) {
+      setSavedSpotIds(userProfile.savedSpots);
+      try {
+        localStorage.setItem('wisgo_saved_spots', JSON.stringify(userProfile.savedSpots));
+      } catch (e) {}
+    }
+  }, [userProfile?.uid, userProfile?.savedSpots]);
 
   // Toast Notification & Scale Animation State
   const [toast, setToast] = useState<{
@@ -97,7 +117,9 @@ function MainApp() {
     }, 450);
 
     if (savedSpotIds.includes(destination.id)) {
-      setSavedSpotIds(prev => prev.filter(id => id !== destination.id));
+      const nextIds = savedSpotIds.filter(id => id !== destination.id);
+      setSavedSpotIds(nextIds);
+      updateSavedSpots(nextIds);
       showToast(
         language === 'km' ? 'បានដកចេញពីកន្លែងរក្សាទុក' : 'Removed from Saved',
         destTitle,
@@ -105,7 +127,9 @@ function MainApp() {
         'removed'
       );
     } else {
-      setSavedSpotIds(prev => [...prev, destination.id]);
+      const nextIds = [...savedSpotIds, destination.id];
+      setSavedSpotIds(nextIds);
+      updateSavedSpots(nextIds);
       showToast(
         language === 'km' ? 'បានរក្សាទុកដោយជោគជ័យ!' : 'Destination Saved!',
         destTitle,
@@ -117,18 +141,24 @@ function MainApp() {
 
   const handleExploreClick = () => {
     setActiveTab('explore');
-    smoothScrollTo('explore-section', 75);
+    if (typeof window !== 'undefined' && window.scrollY > 120) {
+      scrollToTop('smooth');
+    }
   };
 
   const handleViewMapClick = () => {
     setActiveTab('planner');
-    smoothScrollTo('map-section', 75);
+    if (typeof window !== 'undefined' && window.scrollY > 120) {
+      scrollToTop('smooth');
+    }
   };
 
   const handleViewSpotOnMap = (destination: Destination) => {
     setSelectedProvince(destination.province);
     setActiveTab('planner');
-    smoothScrollTo('map-section', 75);
+    if (typeof window !== 'undefined' && window.scrollY > 120) {
+      scrollToTop('smooth');
+    }
   };
 
   const handleAskAIAboutSpot = (destination: Destination) => {
@@ -138,7 +168,9 @@ function MainApp() {
     
     setAssistantPrompt(promptText);
     setActiveTab('assistant');
-    smoothScrollTo('main-content', 75);
+    if (typeof window !== 'undefined' && window.scrollY > 120) {
+      scrollToTop('smooth');
+    }
   };
 
   const filteredDestinations = CAMBODIA_DESTINATIONS.filter(item => {
@@ -231,7 +263,9 @@ function MainApp() {
                   id="hero-trips-link"
                   onClick={() => {
                     setActiveTab('trips');
-                    smoothScrollTo('main-content', 75);
+                    if (typeof window !== 'undefined' && window.scrollY > 120) {
+                      scrollToTop('smooth');
+                    }
                   }}
                   className="inline-flex items-center gap-1.5 px-3 py-1 min-h-[32px] rounded-full bg-white border border-slate-200/80 text-[#0B7A5C] font-semibold hover:bg-[#DFF7ED]/70 hover:border-[#0B7A5C]/40 transition-colors cursor-pointer shadow-2xs"
                 >
@@ -264,7 +298,9 @@ function MainApp() {
                 onClick={() => {
                   setAssistantPrompt('');
                   setActiveTab('assistant');
-                  smoothScrollTo('main-content', 75);
+                  if (typeof window !== 'undefined' && window.scrollY > 120) {
+                    scrollToTop('smooth');
+                  }
                 }}
                 className="sm:col-span-1 md:flex-initial px-4 sm:px-5 py-2.5 sm:py-3 min-h-[44px] rounded-2xl bg-[#0B7A5C] hover:bg-[#086048] text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
@@ -493,7 +529,9 @@ function MainApp() {
                 initialTripContext={activeTripContext}
                 onOpenMyTrips={() => {
                   setActiveTab('trips');
-                  smoothScrollTo('main-content', 75);
+                  if (typeof window !== 'undefined' && window.scrollY > 120) {
+                    scrollToTop('smooth');
+                  }
                 }}
               />
             </motion.div>
@@ -513,13 +551,17 @@ function MainApp() {
                   setAssistantPrompt('');
                   setActiveTripContext(undefined);
                   setActiveTab('assistant');
-                  smoothScrollTo('main-content', 75);
+                  if (typeof window !== 'undefined' && window.scrollY > 120) {
+                    scrollToTop('smooth');
+                  }
                 }}
                 onSelectTripForChat={(trip) => {
                   setActiveTripContext(trip);
                   setAssistantPrompt(`I want to refine my ${trip.durationDays}-day trip to ${trip.destination}: "${trip.title}". What can we adjust?`);
                   setActiveTab('assistant');
-                  smoothScrollTo('main-content', 75);
+                  if (typeof window !== 'undefined' && window.scrollY > 120) {
+                    scrollToTop('smooth');
+                  }
                 }}
               />
             </motion.div>
@@ -628,8 +670,9 @@ function MainApp() {
               <Pricing
                 onNavigateTab={(tab) => {
                   setActiveTab(tab);
-                  const targetId = tab === 'explore' ? 'explore-section' : tab === 'planner' ? 'map-section' : 'main-content';
-                  smoothScrollTo(targetId, 75);
+                  if (typeof window !== 'undefined' && window.scrollY > 120) {
+                    scrollToTop('smooth');
+                  }
                 }}
                 onOpenAuthModal={() => setIsAuthModalOpen(true)}
               />
@@ -644,12 +687,15 @@ function MainApp() {
           onSelectProvince={(province) => {
             setSelectedProvince(province);
             setActiveTab('explore');
-            smoothScrollTo('explore-section', 75);
+            if (typeof window !== 'undefined' && window.scrollY > 120) {
+              scrollToTop('smooth');
+            }
           }}
           onNavigateTab={(tab) => {
             setActiveTab(tab);
-            const targetId = tab === 'explore' ? 'explore-section' : tab === 'planner' ? 'map-section' : 'main-content';
-            smoothScrollTo(targetId, 75);
+            if (typeof window !== 'undefined' && window.scrollY > 120) {
+              scrollToTop('smooth');
+            }
           }}
         />
       )}

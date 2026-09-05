@@ -36,6 +36,7 @@ export interface UserProfile {
     interests: string[];
     dietaryRestrictions: string[];
   };
+  savedSpots?: string[];
 }
 
 export type Province = 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Compass, MapPin, Sparkles, Heart, Tag, Bookmark } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { smoothScrollTo } from '../utils/scrollUtils';
+import { scrollToTop } from '../utils/scrollUtils';
 
 interface MobileBottomNavProps {
   activeTab: 'explore' | 'planner' | 'assistant' | 'trips' | 'favorites' | 'pricing';
@@ -63,8 +63,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={item.id}
               onClick={() => {
                 setActiveTab(item.id);
-                const targetId = item.id === 'explore' ? 'explore-section' : item.id === 'planner' ? 'map-section' : 'main-content';
-                smoothScrollTo(targetId, 70);
+                if (typeof window !== 'undefined' && window.scrollY > 120) {
+                  scrollToTop('smooth');
+                }
               }}
               className={`flex flex-col items-center justify-center min-h-[46px] py-1 px-0.5 rounded-xl transition-all relative cursor-pointer active:scale-95 ${
                 isActive
