@@ -15,7 +15,7 @@ app.use(express.json());
 let aiClient: GoogleGenAI | null = null;
 function getAIClient(): GoogleGenAI {
   if (!aiClient) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY environment variable is not set');
     }
@@ -373,6 +373,106 @@ const DESTINATIONS: Record<string, DestinationData> = {
         ]
       }
     ]
+  },
+  'battambang': {
+    name: 'Battambang Heritage & Countryside',
+    nameKhmer: 'បាត់ដំបង & ជនបទបូរាណ',
+    defaultCost: '$70 – $110 per person (Estimated)',
+    transport: 'Tuk-tuk day tour ($18-22)',
+    dayThemes: [
+      {
+        theme: 'Bamboo Train & Bat Cave Sunset Spectacle',
+        themeKhmer: 'ជិះឡូរី (Bamboo Train) & មើលសត្វប្រចៀវភ្នំសំពៅ',
+        activities: [
+          {
+            timeSlot: 'morning',
+            time: '8:30 AM – 11:30 AM',
+            title: 'Famous Bamboo Train (Norry) Ride',
+            titleKhmer: 'ជិះឡូរីឫស្សីបាត់ដំបង',
+            description: 'Ride on a motorized bamboo platform along old single-track rails through emerald rice fields, enjoying the open breeze and rural landscapes.',
+            location: 'Odambang Village, Battambang',
+            duration: '2 hours',
+            cost: '$5 per person',
+            transport: 'Tuk-tuk from town ($5)',
+            notes: 'A unique Cambodian cultural transport experience.'
+          },
+          {
+            timeSlot: 'afternoon',
+            time: '2:00 PM – 5:00 PM',
+            title: 'Colonial Architecture & Wat Ek Phnom',
+            titleKhmer: 'ស្ថាបត្យកម្មសម័យបារាំង & វត្តឯកភ្នំ',
+            description: 'Admire remarkably preserved French colonial shop houses along the Sangker River, then visit 11th-century sandstone ruins of Wat Ek Phnom.',
+            location: 'Street 1 & 2, Battambang',
+            duration: '3 hours',
+            cost: '$1 entry to temple',
+            transport: 'Tuk-tuk (~$8)',
+            notes: 'Sample fresh Battambang sticky rice in bamboo (Kralan).'
+          },
+          {
+            timeSlot: 'evening',
+            time: '5:30 PM – 7:30 PM',
+            title: 'Phnom Sampeau Bat Cave Sunset',
+            titleKhmer: 'ទស្សនាកងទ័ពប្រចៀវរាប់លានហោះចេញពីរូងភ្នំសំពៅ',
+            description: 'Sit at the base of Phnom Sampeau watching millions of bats stream out into the twilight sky in an unbroken ribbons formation.',
+            location: 'Phnom Sampeau, Battambang',
+            duration: '2 hours',
+            cost: 'Free / small drinks',
+            transport: 'Tuk-tuk (~$10 return)',
+            notes: 'Arrive before 5:30 PM for prime seats.'
+          }
+        ]
+      }
+    ]
+  },
+  'koh rong': {
+    name: 'Koh Rong & Islands Paradise',
+    nameKhmer: 'កោះរ៉ុង & សមុទ្រឋានសួគ៌',
+    defaultCost: '$100 – $160 per person (Estimated)',
+    transport: 'Speed Ferry from Sihanoukville ($25 return), local longtail boats',
+    dayThemes: [
+      {
+        theme: 'White Sand Beaches & Bioluminescent Plankton',
+        themeKhmer: 'ឆ្នេរខ្សាច់សកោះរ៉ុង & មើលពន្លឺផ្លុងតុងពេលយប់',
+        activities: [
+          {
+            timeSlot: 'morning',
+            time: '9:00 AM – 1:00 PM',
+            title: 'Long Set (4K) Beach Sunbathing & Snorkel',
+            titleKhmer: 'ហែលទឹកលេងនៅឆ្នេរ 4K (Long Set Beach)',
+            description: 'Relax on powder-fine white sand stretching 4 kilometers with turquoise waters. Snorkel around shallow reef edges to spot tropical reef fish.',
+            location: 'Long Set Beach, Koh Rong',
+            duration: '4 hours',
+            cost: 'Free beach / $5 mask rental',
+            transport: 'Short walk or beach boat ($3)',
+            notes: 'Bring eco-friendly sunscreen.'
+          },
+          {
+            timeSlot: 'afternoon',
+            time: '2:30 PM – 5:30 PM',
+            title: 'Jungle Trek to Sok San Village & Pier',
+            titleKhmer: 'ដើរកាត់ព្រៃធម្មជាតិទៅភូមិសុខសាន្ត',
+            description: 'Trek along shaded trails through tropical island rainforest to the traditional fishing community of Sok San and unwind with fresh chilled young coconut.',
+            location: 'Sok San Village, Koh Rong',
+            duration: '3 hours',
+            cost: 'Free',
+            transport: 'Scooter or hiking trail',
+            notes: 'Wear sturdy footwear for island trails.'
+          },
+          {
+            timeSlot: 'evening',
+            time: '7:00 PM – 9:00 PM',
+            title: 'Glowing Bioluminescent Plankton Night Boat',
+            titleKhmer: 'ជិះទូកមើលពន្លឺផ្លុងតុងបញ្ចេញរស្មីក្រោមទឹកសមុទ្រ',
+            description: 'Head out on a wooden boat into dark waters to swim among glowing bio-plankton that light up neon blue with every movement.',
+            location: 'Koh Rong Archipelago waters',
+            duration: '2 hours',
+            cost: '$5 – $8 boat tour',
+            transport: 'Departs from main pier',
+            notes: 'An unforgettable bucket-list island experience.'
+          }
+        ]
+      }
+    ]
   }
 };
 
@@ -419,6 +519,10 @@ Would you like me to generate or customize a trip for you now? (e.g. *"Plan 3 da
     destKey = 'phnom penh';
   } else if (q.includes('kampot') || q.includes('kep') || q.includes('pepper') || q.includes('crab') || q.includes('កំពត') || q.includes('កែប')) {
     destKey = 'kampot';
+  } else if (q.includes('battambang') || q.includes('bamboo train') || q.includes('bat cave') || q.includes('បាត់ដំបង')) {
+    destKey = 'battambang';
+  } else if (q.includes('koh rong') || q.includes('beach') || q.includes('island') || q.includes('plankton') || q.includes('កោះរ៉ុង')) {
+    destKey = 'koh rong';
   }
 
   const dest = DESTINATIONS[destKey] || DESTINATIONS['siem reap'];
