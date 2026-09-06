@@ -351,6 +351,66 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
           </div>
         )}
 
+        {/* Quick Sync & Sharing Toolbar */}
+        <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-[#DFF7ED]/60 via-white to-sky-50/50 border border-emerald-200/80 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+            <div>
+              <h5 className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#0B7A5C]" />
+                <span>Ready to Travel? Sync or Share This Itinerary:</span>
+              </h5>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Add every stop to Google Calendar with exact timings, or send a formatted itinerary to Gmail.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button
+              type="button"
+              onClick={() => setIsCalendarOpen(true)}
+              className="px-3 py-2 rounded-xl bg-white border border-emerald-300 hover:bg-emerald-50 text-[#0B7A5C] text-xs font-bold shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer hover:border-emerald-400"
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#0B7A5C]" />
+              <span>Google Calendar</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsGmailOpen(true)}
+              className="px-3 py-2 rounded-xl bg-white border border-red-200 hover:bg-red-50 text-red-700 text-xs font-bold shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer hover:border-red-300"
+            >
+              <Mail className="w-3.5 h-3.5 text-red-600" />
+              <span>Send to Gmail</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDirectPdfDownload}
+              disabled={pdfDownloading}
+              className="px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              {pdfDownloading ? (
+                <Loader2 className="w-3.5 h-3.5 text-[#0B7A5C] animate-spin" />
+              ) : pdfDownloaded ? (
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+              ) : (
+                <Download className="w-3.5 h-3.5 text-[#0B7A5C]" />
+              )}
+              <span>{pdfDownloaded ? 'PDF Saved' : 'Download PDF'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsShareOpen(true)}
+              className="px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5 text-slate-500" />
+              <span>Share & Embed</span>
+            </button>
+          </div>
+        </div>
+
         {/* Refine / Context Chips */}
         {onRefineTrip && (
           <div className="mt-6 pt-4 border-t border-slate-100">

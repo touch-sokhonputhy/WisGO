@@ -5,7 +5,8 @@ import {
   signInWithRedirect,
   getRedirectResult,
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, googleProvider, db } from '../lib/firebase';
@@ -15,9 +16,11 @@ interface AuthContextType {
   currentUser: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
+  googleOAuthToken: string | null;
   signInWithGoogle: () => Promise<User | null>;
   signInWithGoogleRedirect: () => Promise<void>;
   signInWithGoogleAccount: (email: string, displayName?: string, photoURL?: string) => Promise<void>;
+  connectGoogleWorkspace: () => Promise<string | null>;
   signInAsGuest: (guestName?: string, guestEmail?: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserPreferences: (prefs: Partial<NonNullable<UserProfile['preferences']>>) => Promise<void>;
@@ -50,9 +53,11 @@ const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   userProfile: null,
   loading: true,
+  googleOAuthToken: null,
   signInWithGoogle: async () => null,
   signInWithGoogleRedirect: async () => {},
   signInWithGoogleAccount: async () => {},
+  connectGoogleWorkspace: async () => null,
   signInAsGuest: async () => {},
   logout: async () => {},
   updateUserPreferences: async () => {},
@@ -68,6 +73,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [googleOAuthToken, setGoogleOAuthToken] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem('wisgo_google_oauth_token');
+    } catch {
+      return null;
+    }
+  });
 
   // Sync user profile with Firestore upon Google Sign-In
   const syncUserProfile = async (user: User) => {
@@ -199,6 +211,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     getRedirectResult(auth)
       .then(async (result) => {
         if (result?.user) {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential?.accessToken || null;
+          if (token) {
+            setGoogleOAuthToken(token);
+            try { localStorage.setItem('wisgo_google_oauth_token', token); } catch {}
+          }
           localStorage.removeItem('wisgo_guest_user');
           setCurrentUser(result.user);
           await syncUserProfile(result.user);
@@ -240,6 +258,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async (): Promise<User | null> => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      if (result) {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken || null;
+        if (token) {
+          setGoogleOAuthToken(token);
+          try { localStorage.setItem('wisgo_google_oauth_token', token); } catch {}
+        }
+      }
       if (result?.user) {
         localStorage.removeItem('wisgo_guest_user');
         setCurrentUser(result.user);
@@ -249,6 +275,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return null;
     } catch (error: any) {
       console.warn('Firebase Google Sign-In Popup notice:', error?.message || error);
+      throw error;
+    }
+  };
+
+  const connectGoogleWorkspace = async (): Promise<string | null> => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken || null;
+      if (token) {
+        setGoogleOAuthToken(token);
+        try { localStorage.setItem('wisgo_google_oauth_token', token); } catch {}
+      }
+      if (result?.user) {
+        localStorage.removeItem('wisgo_guest_user');
+        setCurrentUser(result.user);
+        await syncUserProfile(result.user);
+      }
+      return token;
+    } catch (error: any) {
+      console.warn('Connect Google Workspace error:', error?.message || error);
       throw error;
     }
   };
@@ -356,6 +403,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     localStorage.removeItem('wisgo_guest_user');
+    try {
+      localStorage.removeItem('wisgo_google_oauth_token');
+    } catch {}
+    setGoogleOAuthToken(null);
     try {
       await signOut(auth);
     } catch (error) {
@@ -644,9 +695,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         currentUser,
         userProfile,
         loading,
+        googleOAuthToken,
         signInWithGoogle,
         signInWithGoogleRedirect,
         signInWithGoogleAccount,
+        connectGoogleWorkspace,
         signInAsGuest,
         logout,
         updateUserPreferences,

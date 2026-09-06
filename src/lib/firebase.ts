@@ -31,7 +31,7 @@ const firebaseConfig = {
   storageBucket: pickValid(defaultConfig.storageBucket, metaEnv.VITE_FIREBASE_STORAGE_BUCKET),
   messagingSenderId: pickValid(defaultConfig.messagingSenderId, metaEnv.VITE_FIREBASE_MESSAGING_SENDER_ID),
   appId: pickValid(defaultConfig.appId, metaEnv.VITE_FIREBASE_APP_ID),
-  firestoreDatabaseId: pickValid(defaultConfig.firestoreDatabaseId, metaEnv.VITE_FIREBASE_DATABASE_ID),
+  firestoreDatabaseId: pickValid((defaultConfig as any).firestoreDatabaseId, metaEnv.VITE_FIREBASE_DATABASE_ID),
 };
 
 // Initialize Firebase App
@@ -58,6 +58,8 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('email');
 googleProvider.addScope('profile');
 googleProvider.addScope('openid');
+googleProvider.addScope('https://www.googleapis.com/auth/calendar.events');
+googleProvider.addScope('https://www.googleapis.com/auth/gmail.send');
 googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
