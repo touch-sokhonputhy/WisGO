@@ -1,11 +1,12 @@
 {
-  "projectId": "gen-lang-client-0397997388",
-  "appId": "1:561861632234:web:4be20fbb1050c1a2e77793",
-  "apiKey": "AIzaSyC2YJdpXMdDMetsmxO3OiSl_LGHBsnZCSs",
-  "authDomain": "gen-lang-client-0397997388.firebaseapp.com",
-  "storageBucket": "gen-lang-client-0397997388.firebasestorage.app",
-  "messagingSenderId": "561861632234",
-  "measurementId": "",
+  "projectId": "wisgo-3a9af",
+  "appId": "1:108499184760:web:01967fda395131ba44518d",
+  "apiKey": "AIzaSyAhA-DdIBh2pNgiqro7FHOhcDUsJGLdzHc",
+  "authDomain": "wisgo-3a9af.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "wisgo-3a9af.firebasestorage.app",
+  "messagingSenderId": "108499184760",
+  "measurementId": "G-49LX8Y2LSF",
   "oAuthClientId": "561861632234-3g1o5blcaj1ru02fnahba6oedutl1jaa.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

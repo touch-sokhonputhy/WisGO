@@ -72,11 +72,16 @@ export const db = customDbId && customDbId !== '(default)'
 
 // Test connection on boot as recommended by Firebase skill
 async function testConnection() {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    return;
+  }
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
   } catch (error) {
     if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
+      if (typeof navigator === 'undefined' || navigator.onLine) {
+        console.error('Please check your Firebase configuration.');
+      }
     }
   }
 }
