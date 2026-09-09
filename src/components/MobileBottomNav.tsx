@@ -52,8 +52,8 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-1.5 pt-1 pb-[calc(0.35rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
-      <div className="grid grid-cols-6 gap-0.5 max-w-md mx-auto items-stretch">
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-1 pt-1.5 pb-[calc(0.45rem+env(safe-area-inset-bottom,6px))] shadow-[0_-4px_18px_rgba(0,0,0,0.07)]">
+      <div className="grid grid-cols-6 gap-0.5 max-w-lg mx-auto items-stretch">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -67,15 +67,15 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   scrollToTop('smooth');
                 }
               }}
-              className={`flex flex-col items-center justify-center min-h-[46px] py-1 px-0.5 rounded-xl transition-all relative cursor-pointer active:scale-95 ${
+              className={`flex flex-col items-center justify-center min-h-[48px] py-1 px-0.5 rounded-xl transition-all relative cursor-pointer active:scale-95 touch-manipulation ${
                 isActive
-                  ? 'text-[#0B7A5C] font-bold bg-[#DFF7ED]/40'
+                  ? 'text-[#0B7A5C] font-bold bg-[#DFF7ED]/60'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               <div className="relative flex items-center justify-center">
                 <Icon
-                  className={`w-4.5 h-4.5 transition-transform duration-200 ${
+                  className={`w-5 h-5 transition-transform duration-200 ${
                     isActive
                       ? 'scale-110 text-[#0B7A5C]'
                       : item.highlight
@@ -89,7 +89,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
                   </span>
                 )}
               </div>
-              <span className="text-[10px] mt-1 font-semibold truncate max-w-full leading-none tracking-tight">
+              <span className="text-[9.5px] sm:text-[10px] mt-1 font-semibold truncate max-w-full leading-none tracking-tight">
                 {item.label}
               </span>
 

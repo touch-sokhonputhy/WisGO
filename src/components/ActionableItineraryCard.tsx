@@ -135,12 +135,12 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
           </div>
 
           {/* Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full lg:w-auto shrink-0">
             {/* Save Trip Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleSave}
-              className={`px-3.5 py-2 min-h-[38px] rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`col-span-2 sm:col-span-1 px-3.5 py-2.5 min-h-[40px] rounded-xl font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation ${
                 savedSuccess || isSaved
                   ? 'bg-emerald-600 text-white shadow-emerald-600/20'
                   : 'bg-[#0B7A5C] hover:bg-[#086048] text-white'
@@ -149,12 +149,12 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
             >
               {savedSuccess || isSaved ? (
                 <>
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-4 h-4" />
                   <span>Saved to Trips</span>
                 </>
               ) : (
                 <>
-                  <Bookmark className="w-3.5 h-3.5 fill-current" />
+                  <Bookmark className="w-4 h-4 fill-current" />
                   <span>Save Trip</span>
                 </>
               )}
@@ -164,7 +164,7 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsCalendarOpen(true)}
-              className="px-3 py-2 min-h-[38px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="px-3 py-2.5 min-h-[40px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation active:scale-95"
               title="Convert activities into Google Calendar events"
             >
               <Calendar className="w-3.5 h-3.5 text-[#0B7A5C]" />
@@ -175,7 +175,7 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsGmailOpen(true)}
-              className="px-3 py-2 min-h-[38px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="px-3 py-2.5 min-h-[40px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation active:scale-95"
               title="Send mobile travel document to Gmail"
             >
               <Mail className="w-3.5 h-3.5 text-red-500" />
@@ -187,7 +187,7 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
               whileTap={{ scale: 0.95 }}
               onClick={handleDirectPdfDownload}
               disabled={pdfDownloading}
-              className={`px-3 py-2 min-h-[38px] rounded-xl font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
+              className={`px-3 py-2.5 min-h-[40px] rounded-xl font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer border touch-manipulation active:scale-95 ${
                 pdfDownloaded
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
                   : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
@@ -216,7 +216,7 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsShareOpen(true)}
-              className="px-3 py-2 min-h-[38px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="px-3 py-2.5 min-h-[40px] rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold text-xs shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation active:scale-95"
               title="Share or embed itinerary on your website"
             >
               <Share2 className="w-3.5 h-3.5 text-slate-500" />
@@ -227,12 +227,12 @@ export const ActionableItineraryCard: React.FC<ActionableItineraryCardProps> = (
       </div>
 
       {/* Itinerary Cost Breakdown Summary (Pie Chart) */}
-      <div className="p-4 sm:p-5 bg-slate-50/60 border-b border-slate-200/70">
+      <div className="p-3.5 sm:p-5 bg-slate-50/60 border-b border-slate-200/70 overflow-hidden">
         <ItineraryCostChart trip={trip} />
       </div>
 
       {/* Day Tabs */}
-      <div className="px-4 sm:px-6 pt-3 bg-slate-50/70 border-b border-slate-200/70 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div className="px-3 sm:px-6 pt-3 bg-slate-50/70 border-b border-slate-200/70 flex items-center gap-2 overflow-x-auto no-scrollbar touch-scroll">
         {trip.days.map((day, idx) => (
           <button
             key={day.dayNumber}

@@ -16,6 +16,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -23,6 +25,32 @@ body {
   color: var(--color-text-dark, #1E293B);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Cross-browser no-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Touch momentum scrolling */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area utilities for mobile notches & gesture navigation bars */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Glassmorphism utility */

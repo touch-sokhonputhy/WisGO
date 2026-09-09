@@ -79,7 +79,7 @@ export const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({
         type="button"
         id="currency-switcher-btn"
         onClick={() => setIsOpen(prev => !prev)}
-        className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 min-h-[38px] rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
+        className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 min-h-[36px] sm:min-h-[38px] rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs shrink-0 whitespace-nowrap active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0B7A5C] ${
           isKhmer
             ? 'bg-[#EBFBF4] hover:bg-[#DDF6EC] border-[#0B7A5C]/40 text-[#0B7A5C]'
             : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-800'

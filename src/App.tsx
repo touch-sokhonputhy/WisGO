@@ -313,7 +313,7 @@ function MainApp() {
       )}
 
       {/* Main Tab Content Area */}
-      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-7 pb-28 sm:pb-10">
+      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-7 pb-28 md:pb-10">
         <AnimatePresence mode="wait">
           {/* EXPLORE TAB */}
           {activeTab === 'explore' && (
@@ -460,17 +460,17 @@ function MainApp() {
                           </div>
 
                           <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
                               <button
                                 onClick={() => handleAskAIAboutSpot(item)}
-                                className="flex items-center gap-1 text-[#0B7A5C] font-bold hover:underline cursor-pointer py-1 min-h-[32px]"
+                                className="flex items-center gap-1 px-2.5 py-1.5 min-h-[38px] rounded-xl text-[#0B7A5C] bg-[#DFF7ED]/40 hover:bg-[#DFF7ED] active:scale-95 font-bold transition-all cursor-pointer"
                               >
                                 <Sparkles className="w-3.5 h-3.5 text-[#21C87A]" />
                                 <span>{t('explore.ask_ai', 'Ask AI Guide')}</span>
                               </button>
                               <button
                                 onClick={() => handleViewSpotOnMap(item)}
-                                className="flex items-center gap-1 text-slate-600 hover:text-[#0B7A5C] font-medium hover:underline cursor-pointer py-1 min-h-[32px]"
+                                className="flex items-center gap-1 px-2.5 py-1.5 min-h-[38px] rounded-xl text-slate-600 hover:text-[#0B7A5C] bg-slate-100/70 hover:bg-slate-100 active:scale-95 font-medium transition-all cursor-pointer"
                               >
                                 <MapPin className="w-3.5 h-3.5 text-[#0B7A5C]" />
                                 <span>{t('nav.view_map', language === 'km' ? 'មើលផែនទី' : 'View Map')}</span>
@@ -729,7 +729,7 @@ function MainApp() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.94 }}
             transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-            className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-[9999] pointer-events-none flex justify-center sm:justify-end"
+            className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-[9999] pointer-events-none flex justify-center sm:justify-end"
           >
             <div className="pointer-events-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 shadow-2xl rounded-2xl p-3 sm:py-3 sm:px-4 max-w-sm w-full flex items-center gap-3.5">
               {toast.image ? (

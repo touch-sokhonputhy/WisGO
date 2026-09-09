@@ -408,10 +408,10 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
           <button
             onClick={handleSaveItineraryToFirestore}
-            className={`px-4 py-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+            className={`px-4 py-3 min-h-[44px] rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer active:scale-98 touch-manipulation ${
               saveStatus === 'saved'
                 ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                 : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
@@ -429,7 +429,7 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
 
           <button
             onClick={onRequestAIPlanner}
-            className="px-5 py-3 rounded-2xl bg-[#0B7A5C] hover:bg-[#086048] text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+            className="px-5 py-3 min-h-[44px] rounded-2xl bg-[#0B7A5C] hover:bg-[#086048] active:scale-98 text-white text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer touch-manipulation"
           >
             <Sparkles className="w-4 h-4 text-[#21C87A]" />
             <span>{t('planner.ai_generate', 'AI Itinerary Generator')}</span>
@@ -448,7 +448,7 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
       />
 
       {/* Dynamic Schedule & Timeline Section */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-6">
+      <div className="bg-white border border-slate-200 rounded-3xl p-4 sm:p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#DFF7ED] text-[#0B7A5C] flex items-center justify-center font-bold shadow-xs shrink-0">
@@ -531,12 +531,12 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
         </div>
 
         {/* Day Selection Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar touch-scroll">
           {itineraryDays.map((day, idx) => (
             <button
               key={day.dayNumber}
               onClick={() => setActiveDayIndex(idx)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
+              className={`px-4 py-2.5 min-h-[42px] rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer touch-manipulation active:scale-95 ${
                 activeDayIndex === idx
                   ? 'bg-[#0B7A5C] text-white border-[#0B7A5C] shadow-xs'
                   : 'bg-[#F8FCFA] text-slate-600 border-slate-200 hover:border-slate-300'
@@ -560,7 +560,7 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
                   : `Quick Add Saved Spots to Day ${itineraryDays[activeDayIndex]?.dayNumber}:`}
               </span>
             </p>
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-scroll">
               {savedDestinations.map(spot => {
                 const spotTitle = (language === 'km' && spot.khmerTitle) ? spot.khmerTitle : spot.title;
                 return (
@@ -758,36 +758,36 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
                             <div className="flex flex-col items-center gap-1 shrink-0">
                               <button
                                 onClick={() => handleStartEditActivity(act)}
-                                className="p-1 text-slate-400 hover:text-[#0B7A5C] rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                                className="p-1.5 min-h-[34px] min-w-[34px] text-slate-400 hover:text-[#0B7A5C] rounded-lg hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center active:scale-90 touch-manipulation"
                                 title={language === 'km' ? 'កែសម្រួល' : 'Edit activity'}
                               >
-                                <Edit3 className="w-3.5 h-3.5" />
+                                <Edit3 className="w-4 h-4" />
                               </button>
 
                               <button
                                 onClick={() => handleMoveActivity(actIdx, 'up')}
                                 disabled={actIdx === 0}
-                                className="p-1 text-slate-400 hover:text-[#0B7A5C] disabled:opacity-30 rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                                className="p-1.5 min-h-[34px] min-w-[34px] text-slate-400 hover:text-[#0B7A5C] disabled:opacity-30 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center active:scale-90 touch-manipulation"
                                 title={language === 'km' ? 'ផ្លាស់ទីឡើងលើ' : 'Move up'}
                               >
-                                <MoveUp className="w-3.5 h-3.5" />
+                                <MoveUp className="w-4 h-4" />
                               </button>
 
                               <button
                                 onClick={() => handleMoveActivity(actIdx, 'down')}
                                 disabled={actIdx === itineraryDays[activeDayIndex].activities.length - 1}
-                                className="p-1 text-slate-400 hover:text-[#0B7A5C] disabled:opacity-30 rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                                className="p-1.5 min-h-[34px] min-w-[34px] text-slate-400 hover:text-[#0B7A5C] disabled:opacity-30 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center active:scale-90 touch-manipulation"
                                 title={language === 'km' ? 'ផ្លាស់ទីចុះក្រោម' : 'Move down'}
                               >
-                                <MoveDown className="w-3.5 h-3.5" />
+                                <MoveDown className="w-4 h-4" />
                               </button>
 
                               <button
                                 onClick={() => handleRemoveActivity(activeDayIndex, actIdx)}
-                                className="p-1 text-slate-400 hover:text-rose-500 rounded hover:bg-rose-50 transition-colors mt-1 cursor-pointer"
+                                className="p-1.5 min-h-[34px] min-w-[34px] text-slate-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition-colors mt-0.5 cursor-pointer flex items-center justify-center active:scale-90 touch-manipulation"
                                 title={t('planner.delete_activity', 'Remove activity')}
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           )}
@@ -805,8 +805,8 @@ export const MapAndPlanner: React.FC<MapAndPlannerProps> = ({
 
       {/* Modal / Dialog for Adding Custom Time Slot & Selecting Location */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-6 text-slate-800 shadow-2xl relative overflow-hidden space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-5 sm:p-6 text-slate-800 shadow-2xl relative overflow-hidden space-y-4 max-h-[90dvh] overflow-y-auto touch-scroll">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2 text-[#0B7A5C] font-bold text-sm">

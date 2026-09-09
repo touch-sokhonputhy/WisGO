@@ -34,7 +34,8 @@ export const LanguageSwitcher: React.FC<{ compact?: boolean }> = ({ compact = fa
         title="Switch Language / ជ្រើសរើសភាសា"
       >
         <span className="text-sm shrink-0">{currentLang.flag}</span>
-        <span className="font-semibold whitespace-nowrap">{compact ? currentLang.code.toUpperCase() : currentLang.localName}</span>
+        <span className="font-semibold whitespace-nowrap hidden sm:inline">{compact ? currentLang.code.toUpperCase() : currentLang.localName}</span>
+        <span className="font-semibold whitespace-nowrap sm:hidden">{currentLang.code.toUpperCase()}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
