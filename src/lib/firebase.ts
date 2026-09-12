@@ -54,14 +54,24 @@ try {
   console.warn('Auth persistence initialization skipped:', e);
 }
 
+// Standard Google Auth Provider for basic user login (non-sensitive scopes only)
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('email');
 googleProvider.addScope('profile');
 googleProvider.addScope('openid');
-googleProvider.addScope('https://www.googleapis.com/auth/calendar.events');
-googleProvider.addScope('https://www.googleapis.com/auth/gmail.send');
 googleProvider.setCustomParameters({
   prompt: 'select_account'
+});
+
+// Dedicated Google Workspace Provider for optional Calendar & Gmail integrations (sensitive scopes)
+export const googleWorkspaceProvider = new GoogleAuthProvider();
+googleWorkspaceProvider.addScope('email');
+googleWorkspaceProvider.addScope('profile');
+googleWorkspaceProvider.addScope('openid');
+googleWorkspaceProvider.addScope('https://www.googleapis.com/auth/calendar.events');
+googleWorkspaceProvider.addScope('https://www.googleapis.com/auth/gmail.send');
+googleWorkspaceProvider.setCustomParameters({
+  prompt: 'consent select_account'
 });
 
 // Initialize Firestore

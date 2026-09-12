@@ -9,7 +9,7 @@ import {
   GoogleAuthProvider
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, googleProvider, db } from '../lib/firebase';
+import { auth, googleProvider, googleWorkspaceProvider, db } from '../lib/firebase';
 import { UserProfile, SubscriptionInfo, TransactionRecord } from '../types';
 
 interface AuthContextType {
@@ -281,7 +281,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const connectGoogleWorkspace = async (): Promise<string | null> => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleWorkspaceProvider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken || null;
       if (token) {
